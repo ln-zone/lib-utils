@@ -22,7 +22,6 @@ public class Btc implements Serializable {
 			if (value == null || "".equals(value)) {
 				this.value = "";
 			} else {
-				Require.notNull(value, "value");
 				if (value.matches(regex) == false) {
 					throw new RuntimeException("Incorrect Btc format: " + value
 							+ ". Format should be x.xxxxxxxx:xxx. Or in other words have to mach regex: " + regex);
@@ -129,7 +128,7 @@ public class Btc implements Serializable {
 
 			String ret = bPart + "." + sPart + ":" + mPart;
 			if (isNegative) {
-				if (msat(ret) != 0) {
+				if (parseMsat(ret) != 0) {
 					ret = "-" + ret;
 				}
 			}
@@ -156,28 +155,31 @@ public class Btc implements Serializable {
 
 	public int toSatRoundFloor() {
 		if ("".equals(value)) {
-			throw new RuntimeException("Cannot convert to bitcoins. No value assigned to Btc class");
+			throw new RuntimeException("Cannot convert to satoshis. No value assigned to Btc class");
 		}
 		return (int) (toMsat() / 1000L);
 	}
 
 	public Btc add(Btc value) {
-		if ("".equals(value)) {
+		Require.notNull("value", "value");
+		if ("".equals(value.toString())) {
 			throw new RuntimeException("Cannot add Btc. No value assigned to Btc class");
 		}
 		return fromMsat(this.toMsat() + value.toMsat());
 	}
 
 	public Btc sub(Btc value) {
+		Require.notNull("value", "value");
 		if ("".equals(value)) {
 			throw new RuntimeException("Cannot add Btc. No value assigned to Btc class");
 		}
 		return fromMsat(this.toMsat() - value.toMsat());
 	}
 
-	private static long msat(String value) {
+	private static long parseMsat(String value) {
+		Require.notNull(value, "value");
 		if ("".equals(value)) {
-			throw new RuntimeException("Cannot convert to msat. No value assigned to Btc class");
+			throw new RuntimeException("Cannot convert to msat. No value provided");
 		}
 		try {
 			String[] bigSplited = value.split("\\.");
@@ -197,7 +199,7 @@ public class Btc implements Serializable {
 	}
 
 	public long toMsat() {
-		return msat(value);
+		return parseMsat(value);
 	}
 
 	public BigDecimal toBitcoins() {

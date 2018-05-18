@@ -79,8 +79,8 @@ public class Crypto {
 		}
 	}
 
-	public Crypto() {
-		// TODO Auto-generated constructor stub
+	private Crypto() {
+
 	}
 
 }

@@ -9,7 +9,11 @@ public class RawJson implements Serializable {
 	private final String str;
 	
 	public RawJson(Object toJson) {
-		str = JsonBuilder.build().toJson(toJson);
+		this.str = JsonBuilder.build().toJson(toJson);
+	}
+	
+	public RawJson(String str) {
+		this.str = str;
 	}
 	
 	public String getJsonStr() {

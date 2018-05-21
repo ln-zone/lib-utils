@@ -15,5 +15,15 @@ public class JsonBuilder {
 		return (new GsonBuilder()).registerTypeAdapter(RawJson.class, new RawJsonAdapter())
 				.registerTypeAdapter(Btc.class, new BtcAdapter()).serializeNulls().create();
 	}
+	
+	public static boolean isValid(String Json) {
+        Gson gson = new Gson();
+        try {
+            gson.fromJson(Json, Object.class);
+            return true;
+        } catch (com.google.gson.JsonSyntaxException ex) {
+            return false;
+        }
+    }
 
 }

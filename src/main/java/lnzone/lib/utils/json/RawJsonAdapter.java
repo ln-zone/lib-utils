@@ -1,6 +1,7 @@
 package lnzone.lib.utils.json;
 
 import java.io.IOException;
+import java.text.StringCharacterIterator;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -22,7 +23,7 @@ public class RawJsonAdapter extends TypeAdapter<RawJson> {
 		JsonToken t = in.peek();
 		switch (t.toString()) {
 		case "NAME":
-			jsonBuilder.append("\"" + in.nextName() + "\":");
+			jsonBuilder.append("\"" + addEscapeChars(in.nextName()) + "\":");
 			break;
 		case "BEGIN_OBJECT":
 			readObject(in, jsonBuilder);
@@ -37,7 +38,7 @@ public class RawJsonAdapter extends TypeAdapter<RawJson> {
 		case "END_ARRAY":
 			throw new IOException("It looks it should neve happens");
 		case "STRING":
-			jsonBuilder.append("\"" + in.nextString() + "\",");
+			jsonBuilder.append("\"" + addEscapeChars(in.nextString()) + "\",");
 			break;
 		case "NUMBER":
 			String num = Double.toString(in.nextDouble());
@@ -98,6 +99,42 @@ public class RawJsonAdapter extends TypeAdapter<RawJson> {
 		String ret = jsonBuilder.toString();
 		return new RawJson(ret);
 
+	}
+	
+
+	private static String addEscapeChars(String crunchifyJSON) {
+		final StringBuilder crunchifyNewJSON = new StringBuilder();
+ 
+		// StringCharacterIterator class iterates over the entire String
+		StringCharacterIterator iterator = new StringCharacterIterator(crunchifyJSON);
+		char myChar = iterator.current();
+ 
+		// DONE = \\uffff (not a character)
+		while (myChar != StringCharacterIterator.DONE) {
+			if (myChar == '\"') {
+				crunchifyNewJSON.append("\\\"");
+			} else if (myChar == '\t') {
+				crunchifyNewJSON.append("\\t");
+			} else if (myChar == '\f') {
+				crunchifyNewJSON.append("\\f");
+			} else if (myChar == '\n') {
+				crunchifyNewJSON.append("\\n");
+			} else if (myChar == '\r') {
+				crunchifyNewJSON.append("\\r");
+			} else if (myChar == '\\') {
+				crunchifyNewJSON.append("\\\\");
+			} else if (myChar == '/') {
+				crunchifyNewJSON.append("\\/");
+			} else if (myChar == '\b') {
+				crunchifyNewJSON.append("\\b");
+			} else {
+ 
+				// nothing matched - just as text as it is.
+				crunchifyNewJSON.append(myChar);
+			}
+			myChar = iterator.next();
+		}
+		return crunchifyNewJSON.toString();
 	}
 
 }

@@ -3,7 +3,7 @@ package lnzone.lib.utils.exceptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StoredException extends Exception {
+public class StoredException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	

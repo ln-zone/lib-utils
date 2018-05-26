@@ -23,5 +23,9 @@ public class RawJson implements Serializable {
 	public String toString() {
 		return str;
 	}
+	
+	public <T> T fromJson(Class<T> classOfT) {
+		return JsonBuilder.build().fromJson(str, classOfT);
+	}
 
 }

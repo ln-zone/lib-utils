@@ -8,6 +8,7 @@ import org.junit.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import lnzone.lib.utils.Config;
 import lnzone.lib.utils.json.JsonBuilder;
 
 public class ExceptionManagerTest extends TestCase {
@@ -20,6 +21,7 @@ public class ExceptionManagerTest extends TestCase {
 	 * @return the suite of tests being tested
 	 */
 	public static Test suite() {
+		Config.loadEmptyConfig();
 		return new TestSuite(ExceptionManagerTest.class);
 	}
 

@@ -47,6 +47,15 @@ public class Config {
 		return getEntry(name, entryClass, true);
 	}
 	
+	public <T> T getEntryOrDefault(String name, Class<T> entryClass, T defaultValue) {
+		T res = getEntry(name, entryClass, false);
+		if(res != null) {
+			return res;
+		} else {
+			return defaultValue;
+		}
+	}
+		
 	public <T> T getEntry(String name, Class<T> entryClass, boolean restrict) {
 		RawJson en = entries.get(name);
 		if(en == null) {

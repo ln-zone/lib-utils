@@ -70,18 +70,22 @@ public class Config {
 	
 	public static Config getInstance() throws StoredException {
 		if(instance == null) {
-			instance = loadFromFile();
+			instance = load();
 		}
 		return instance;
 	}
 
+	public static void loadFromFile(File file) throws StoredException {
+		instance = load(file);
+	}
+	
 	public static void loadFromJson(String json) {
 		instance = new Config( );
 		Type type = new TypeToken<HashMap<String, RawJson>>(){}.getType();
 		instance.entries = JsonBuilder.build().fromJson(json, type);
 	}
 
-	public static Config loadFromFile(File file) throws StoredException {
+	private static Config load(File file) throws StoredException {
 		try {
 			Require.notNull(file, "file");
 			if (file.exists() == false) {
@@ -97,8 +101,8 @@ public class Config {
 		}
 	}
 	
-	public static Config loadFromFile() throws StoredException {
-		return loadFromFile(new File("config.json"));
+	public static Config load() throws StoredException {
+		return load(new File("config.json"));
 	}
 
 

@@ -23,11 +23,15 @@ public class ExceptionManager {
 		return instance;
 	}
 
+	public synchronized void deleteAll() {
+		exceptions.clear();
+	}
+	
 	public Collection<Long> getExceptionIds() {
 		return exceptions.keySet();
 	}
 	
-	public long add(StoredException exception) {
+	public synchronized long add(StoredException exception) {
 		long exceptionId;
 		if (exception.getCause() instanceof StoredException) {
 			exceptionId = ((StoredException) exception.getCause()).getId();
@@ -41,7 +45,7 @@ public class ExceptionManager {
 		return exceptionId;
 	}
 
-	public ExceptionInfo get(long exceptionId) {
+	public synchronized ExceptionInfo get(long exceptionId) {
 		return exceptions.get(exceptionId);
 	}
 

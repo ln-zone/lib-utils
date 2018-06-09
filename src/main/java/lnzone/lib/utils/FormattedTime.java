@@ -7,7 +7,7 @@ import lnzone.lib.utils.exceptions.StoredException;
 
 public class FormattedTime {
 
-	enum Precision {
+	public static enum Precision {
 		YEARS, MONTHS, DAYS, HOURS, MINUTES, SECONDS, MILLISECONDS
 	};
 
@@ -73,7 +73,7 @@ public class FormattedTime {
 			throw new StoredException("Cannot format time: " + date + " with precision " + precision, ex);
 		}
 	}
-
+	
 	private Date date;
 	private Precision precision;
 
@@ -93,7 +93,16 @@ public class FormattedTime {
 		this.date = new Date(Require.inRange(time, 1, Long.MAX_VALUE, "time"));
 		this.precision = Require.notNull(precision, "precision");
 	}
-
+	
+	public FormattedTime(Date date, Precision precision) {
+		this.date = Require.notNull(date, "date");
+		this.precision = Require.notNull(precision, "precision");
+	}
+	
+	public static FormattedTime now(Precision precision) {
+		return new FormattedTime(new Date(), precision);
+	}
+	
 	public FormattedTime(String time) {
 		Require.notNull(time, "time");
 		this.precision = calcPrecision(time);

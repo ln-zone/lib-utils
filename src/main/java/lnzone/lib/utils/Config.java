@@ -34,7 +34,7 @@ public class Config {
 
 	public void addEntry(String name, Object value) {
 		if (entries.containsKey(name)) {
-			throw new StoredException("Cannot add entry '" + name + "'. Such entry already exists");
+			throw new StoredException("Cannot add entry '" + name + "'. Such entry already exists", null);
 		}
 		putEntry(name, value);
 	}
@@ -60,7 +60,7 @@ public class Config {
 		RawJson en = entries.get(name);
 		if (en == null) {
 			if (restrict) {
-				throw new StoredException("Cannot get entry '" + name + "'. Such entry do not exists");
+				throw new StoredException("Cannot get entry '" + name + "'. Such entry do not exists", null);
 			} else {
 				return null;
 			}

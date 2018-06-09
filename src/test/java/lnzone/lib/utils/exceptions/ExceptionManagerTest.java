@@ -15,19 +15,19 @@ public class ExceptionManagerTest extends TestCase {
 
 	public ExceptionManagerTest(String testName) {
 		super(testName);
+		Config.loadEmptyConfig();
 	}
 
 	/**
 	 * @return the suite of tests being tested
 	 */
 	public static Test suite() {
-		Config.loadEmptyConfig();
 		return new TestSuite(ExceptionManagerTest.class);
 	}
 
 	public void testBasic() {
 		ExceptionManager exMan = ExceptionManager.getInstance();
-		Exception ex0 = new Exception("Nic nie działa!");
+		Exception ex0 = new StoredException("Nic nie działa!", null);
 		StoredException ex = new StoredException("Nie jest dobrze", ex0);
 		long id = exMan.add(ex);
 		ExceptionInfo ex1 = new ExceptionInfo(ex);

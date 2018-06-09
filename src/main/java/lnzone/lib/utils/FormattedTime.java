@@ -28,7 +28,7 @@ public class FormattedTime {
 		case MILLISECONDS:
 			return "yyyy-MM-dd HH:mm:ss.SSS";
 		default:
-			throw new StoredException("Usupported precision: " + precision);
+			throw new StoredException("Usupported precision: " + precision, null);
 		}
 	}
 
@@ -50,7 +50,7 @@ public class FormattedTime {
 		case 23:
 			return Precision.MILLISECONDS;
 		default:
-			throw new StoredException("Cannot calc precision from time: " + time);
+			throw new StoredException("Cannot calc precision from time: " + time, null);
 		}
 	}
 

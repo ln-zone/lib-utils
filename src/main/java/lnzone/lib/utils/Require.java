@@ -1,5 +1,7 @@
 package lnzone.lib.utils;
 
+import lnzone.lib.utils.exceptions.StoredException;
+
 public class Require {
 
 	private Require() {
@@ -7,7 +9,7 @@ public class Require {
 	
 	public static <T> T notNull(T obj, String name) {
 		if(obj == null) {
-			throw new RuntimeException("\"" + name + "\" cannot be null");
+			throw new StoredException("\"" + name + "\" cannot be null", null);
 		}
 		return obj;
 	}
@@ -16,14 +18,21 @@ public class Require {
 		if((value >= valFrom) && (value <= valTo)) {
 			return value;
 		}
-		throw new RuntimeException("\"" + name + "\" must be value between " + valFrom + " and " + valTo);
+		throw new StoredException("\"" + name + "\" must be value between " + valFrom + " and " + valTo, null);
 	}
 	
 	public static long inRange(long value, long valFrom, long valTo, String name) {
 		if((value >= valFrom) && (value <= valTo)) {
 			return value;
 		}
-		throw new RuntimeException("\"" + name + "\" must be value between " + valFrom + " and " + valTo);
+		throw new StoredException("\"" + name + "\" must be value between " + valFrom + " and " + valTo, null);
 	}
 
+	public static String notEmpty(String value, String name) {
+		if(value!=null && !value.equals("")) {
+			return value;
+		}
+		throw new StoredException("\"" + name + "\" cannot be empty string", null); 
+	}
+	
 }

@@ -213,5 +213,9 @@ public class Btc implements Serializable {
 			throw new RuntimeException("Cannot convert to Btc: " + value, ex);
 		}
 	}
+	
+	public boolean hasValue() {
+		return !"".equals(value);
+	}
 
 }

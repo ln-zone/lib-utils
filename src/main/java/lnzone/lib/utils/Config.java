@@ -6,6 +6,9 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.reflect.TypeToken;
 
 import lnzone.lib.utils.exceptions.StoredException;
@@ -13,12 +16,14 @@ import lnzone.lib.utils.json.JsonBuilder;
 import lnzone.lib.utils.json.RawJson;
 
 public class Config {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
 	public static void main(String[] args) {
 		Config conf = new Config();
 		conf.entries.put("connectionKeys", new RawJson(Crypto.generateKeys()));
 		conf.entries.put("supportWebSocket", new RawJson(true));
-		System.out.println(JsonBuilder.build().toJson(conf.entries));
+		LOGGER.debug(JsonBuilder.build().toJson(conf.entries));
 	}
 
 	private Map<String, RawJson> entries = new HashMap<String, RawJson>();

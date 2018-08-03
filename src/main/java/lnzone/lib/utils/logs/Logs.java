@@ -44,7 +44,8 @@ public class Logs {
 
 	public synchronized void addLog(Log log) {
 		LOGGER.debug("Log added");
-		list.add(log);
+		Log copied = JsonBuilder.build().fromJson(JsonBuilder.build().toJson(log), Log.class);
+		list.add(copied);
 	}
 
 	public synchronized String getAsJson() {

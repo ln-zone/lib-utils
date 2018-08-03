@@ -9,5 +9,9 @@ public class Utils {
 	public static boolean deepEquals(Object r1, Object r2) {
 		return StringUtils.equals((new Gson()).toJson(r1), (new Gson()).toJson(r2));
 	}
+
+	public static long rand() {
+		return (long)(Math.random()*Long.MAX_VALUE);
+	}
 	
 }

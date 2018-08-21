@@ -79,7 +79,7 @@ public class Btc implements Serializable {
 			long msat = bitcoins.movePointRight(11).longValueExact();
 			return fromMsat(msat);
 		} catch (Exception ex) {
-			throw new RuntimeException("Cannot convert bitcoins to milisatoshis: " + bitcoins);
+			throw new RuntimeException("Cannot convert bitcoins to milisatoshis: " + bitcoins, ex);
 		}
 
 	}
@@ -161,19 +161,41 @@ public class Btc implements Serializable {
 	}
 
 	public Btc add(Btc value) {
-		Require.notNull("value", "value");
-		if ("".equals(value.toString())) {
+		Require.notNull(value, "value");
+		if (!this.hasValue() || !value.hasValue()) {
 			throw new RuntimeException("Cannot add Btc. No value assigned to Btc class");
 		}
 		return fromMsat(this.toMsat() + value.toMsat());
 	}
 
 	public Btc sub(Btc value) {
-		Require.notNull("value", "value");
-		if ("".equals(value)) {
+		Require.notNull(value, "value");
+		if (!this.hasValue() || !value.hasValue()) {
 			throw new RuntimeException("Cannot add Btc. No value assigned to Btc class");
 		}
 		return fromMsat(this.toMsat() - value.toMsat());
+	}
+	
+	public double div(Btc value) {
+		Require.notNull(value, "value");
+		if (!this.hasValue() || !value.hasValue()) {
+			throw new RuntimeException("Cannot div Btc. No value assigned to Btc class");
+		}
+		return (double)this.toMsat() / value.toMsat();
+	}
+	
+	public Btc div(int value) {
+		if (!this.hasValue()) {
+			throw new RuntimeException("Cannot div Btc. No value assigned to Btc class");
+		}
+		return fromMsat(this.toMsat() / value);
+	}
+	
+	public Btc multi(int value) {
+		if (!this.hasValue()) {
+			throw new RuntimeException("Cannot div Btc. No value assigned to Btc class");
+		}
+		return fromMsat(this.toMsat() * value);
 	}
 
 	private static long parseMsat(String value) {
@@ -217,5 +239,7 @@ public class Btc implements Serializable {
 	public boolean hasValue() {
 		return !"".equals(value);
 	}
+
+
 
 }

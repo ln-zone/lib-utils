@@ -117,4 +117,8 @@ public class Logs {
 		return list.size();
 	}
 
+	public synchronized void clear() {
+		list.clear();
+	}
+
 }

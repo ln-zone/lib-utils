@@ -1,5 +1,6 @@
 package lnzone.lib.utils;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +17,7 @@ public class NotificatorTests extends TestCase {
 	class ToNotifyNumber {
 
 		Random rand = new Random();
-		
+
 		public AtomicInteger lastNum = new AtomicInteger(0);
 		public boolean wrongOrder = false;
 		public boolean interrupted = false;
@@ -29,7 +30,7 @@ public class NotificatorTests extends TestCase {
 					wrongOrder = true;
 				}
 				lastNum.incrementAndGet();
-				
+
 				Thread.sleep(rand.nextInt(10));
 			} catch (InterruptedException e) {
 				interrupted = true;
@@ -48,15 +49,96 @@ public class NotificatorTests extends TestCase {
 		return new TestSuite(NotificatorTests.class);
 	}
 
+	public void testSimple() throws Exception {
+
+		ToNotifyNumber observer = new ToNotifyNumber();
+
+		try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
+
+			notificator.register(observer);
+			notificator.notifyThem((toNotify) -> toNotify.numberGenerated(0));
+
+		}
+
+		Assert.assertEquals(false, observer.wrongOrder);
+		Assert.assertEquals(false, observer.interrupted);
+		Assert.assertEquals(1, observer.lastNum.get());
+
+	}
+
+	public void testWithThread() throws Exception {
+
+		ToNotifyNumber observer = new ToNotifyNumber();
+
+		try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
+
+			notificator.register(observer);
+			final int num = 0;
+			Thread th = new Thread(() -> {
+				notificator.notifyThem((toNotify) -> toNotify.numberGenerated(num));
+			});
+			th.start();
+			th.join();
+		}
+
+		Assert.assertEquals(false, observer.wrongOrder);
+		Assert.assertEquals(false, observer.interrupted);
+		Assert.assertEquals(1, observer.lastNum.get());
+
+	}
+
+	public void testMultithread() throws Exception {
+
+		int numThreads = 10;
+		int numObservers = 30;
+
+		List<ToNotifyNumber> observers = new LinkedList<ToNotifyNumber>();
+		
+		for (int i = 0; i < numObservers; i++) {
+			observers.add(new ToNotifyNumber());
+		}
+
+		try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
+
+			for (ToNotifyNumber el : observers) {
+				notificator.register(el);
+			}
+
+			List<Thread> threads = new ArrayList<Thread>();
+
+			for (int i = 0; i < numThreads; i++) {
+				final int num = i;
+				threads.add(new Thread(() -> {
+					notificator.notifyThem((toNotify) -> toNotify.numberGenerated(num));
+				}));
+			}
+			
+			for (Thread th : threads) {
+				th.start();
+			}
+
+			for (Thread th : threads) {
+				th.join();
+			}
+		}
+
+		for (ToNotifyNumber el : observers) {
+//			Assert.assertEquals(false, el.wrongOrder);
+			Assert.assertEquals(false, el.interrupted);
+			Assert.assertEquals(numThreads, el.lastNum.get());
+		}
+
+	}
+
 	public void testMassive() throws Exception {
 
 		int countNum = 100;
-		
+
 		List<ToNotifyNumber> listeners = new LinkedList<ToNotifyNumber>();
 		for (int i = 0; i < 10; i++) {
 			listeners.add(new ToNotifyNumber());
 		}
-		
+
 		try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
 
 			for (ToNotifyNumber el : listeners) {
@@ -68,7 +150,7 @@ public class NotificatorTests extends TestCase {
 				notificator.notifyThem((toNotify) -> toNotify.numberGenerated(num));
 			}
 		}
-	
+
 		for (ToNotifyNumber el : listeners) {
 			Assert.assertEquals(false, el.wrongOrder);
 			Assert.assertEquals(false, el.interrupted);
@@ -76,5 +158,7 @@ public class NotificatorTests extends TestCase {
 		}
 
 	}
+
+
 
 }

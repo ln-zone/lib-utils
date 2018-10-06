@@ -8,20 +8,24 @@ import java.util.concurrent.TimeUnit;
 
 public class Notificator<T extends Object> implements AutoCloseable {
 
-	private Set<T> toNotifyList = new HashSet<T>();
+	private Set<T> observers = new HashSet<T>();
 
 	final ExecutorService singleThreadPool = Executors.newFixedThreadPool(1);
 
-	public synchronized void register(T toNotify) {
-		toNotifyList.add(toNotify);
+	public synchronized void register(T observer) {
+		observers.add(observer);
+	}
+	
+	public synchronized void unregister(T observer) {
+		observers.remove(observer);
 	}
 
 	public synchronized void notifyThem(NotificationMethod<T> method) {
 
 		singleThreadPool.submit(() -> {
 			synchronized (this) {
-				final ExecutorService threadPool = Executors.newFixedThreadPool(toNotifyList.size());
-				for (T el : toNotifyList) {
+				final ExecutorService threadPool = Executors.newFixedThreadPool(observers.size());
+				for (T el : observers) {
 					threadPool.submit(() -> method.notifyHim(el));
 				}
 				threadPool.shutdown();
@@ -40,5 +44,6 @@ public class Notificator<T extends Object> implements AutoCloseable {
 		singleThreadPool.shutdown();
 		singleThreadPool.awaitTermination(20, TimeUnit.SECONDS);
 	}
+
 
 }

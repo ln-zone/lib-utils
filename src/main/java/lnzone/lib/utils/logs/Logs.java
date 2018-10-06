@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.reflect.TypeToken;
 
+import lnzone.lib.utils.Config;
 import lnzone.lib.utils.exceptions.StoredException;
 import lnzone.lib.utils.json.JsonBuilder;
 
@@ -33,8 +34,13 @@ public class Logs {
 	// private List<Log> listCopy = new LinkedList<Log>();
 
 	public Logs() {
-		load();
-		new SavingThread().start();
+		boolean saveLogs = Config.getInstance().getEntryOrDefault("saveLogs", Boolean.class, true);
+		if (saveLogs) {
+			load();
+			new SavingThread().start();
+		} else {
+			LOGGER.info("Logs will not be loaded and saved");
+		}
 	}
 
 	public synchronized void event(String message) {
@@ -74,7 +80,7 @@ public class Logs {
 				JsonBuilder.build().toJson(list, out);
 			}
 		} catch (Exception ex) {
-			throw new StoredException("Cannot save invoices", ex);
+			throw new StoredException("Cannot save logs", ex);
 		}
 	}
 

@@ -12,18 +12,22 @@ public class Utils {
 		Gson gson = new Gson();
 		return StringUtils.equals(gson.toJson(r1), gson.toJson(r2));
 	}
-	
+
 	public static <T> T deepCopy(Object obj, Class<T> classOfT) {
 		Gson gson = new Gson();
 		return gson.fromJson(gson.toJson(obj), classOfT);
 	}
-	
+
 	public static String toJson(Object obj) {
 		return JsonBuilder.build().toJson(obj);
 	}
-	
+
 	public static long rand() {
-		return (long)(Math.random()*Long.MAX_VALUE);
+		return (long) (Math.random() * Long.MAX_VALUE);
 	}
-	
+
+	public static void prn(Object obj) {
+		System.out.println(JsonBuilder.build().toJson(obj));
+	}
+
 }

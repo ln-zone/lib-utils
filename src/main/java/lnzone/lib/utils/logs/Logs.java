@@ -23,6 +23,8 @@ public class Logs {
 	private final static Logger LOGGER = LoggerFactory.getLogger(Logs.class);
 
 	static final Logs instance = new Logs();
+	
+	final boolean printLogs;
 
 	public static synchronized Logs getInstance() {
 		return instance;
@@ -34,6 +36,7 @@ public class Logs {
 	// private List<Log> listCopy = new LinkedList<Log>();
 
 	public Logs() {
+		printLogs = Config.getInstance().getEntryOrDefault("printLogs", Boolean.class, false);
 		boolean saveLogs = Config.getInstance().getEntryOrDefault("saveLogs", Boolean.class, true);
 		if (saveLogs) {
 			load();
@@ -49,6 +52,9 @@ public class Logs {
 	}
 
 	public synchronized void addLog(Log log) {
+		if(printLogs) {
+			System.out.println("LOG: " + log.event);
+		}
 		LOGGER.debug("Log added");
 		Log copied = JsonBuilder.build().fromJson(JsonBuilder.build().toJson(log), Log.class);
 		list.add(copied);

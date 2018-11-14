@@ -12,9 +12,9 @@ public class Log {
 	
 	FormattedTime time;
 	long timeMillsec;
-	private Map<String, Object> params = new HashMap<String, Object>();
+	Map<String, Object> params = new HashMap<String, Object>();
 	@SuppressWarnings("unused")
-	private String event;
+	String event;
 	
 	public Log param(String name, Object value) {
 		params.put(name, value);

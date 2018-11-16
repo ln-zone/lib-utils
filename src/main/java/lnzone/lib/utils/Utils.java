@@ -9,6 +9,12 @@ import lnzone.lib.utils.json.JsonBuilder;
 public class Utils {
 
 	public static boolean deepEquals(Object r1, Object r2) {
+		if(r1 == null && r2 == null) {
+			return true;
+		}
+		if(r1 == null || r2 == null) {
+			return false;
+		}
 		Gson gson = new Gson();
 		return StringUtils.equals(gson.toJson(r1), gson.toJson(r2));
 	}

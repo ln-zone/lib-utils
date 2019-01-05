@@ -240,6 +240,23 @@ public class Btc implements Serializable {
 		return !"".equals(value);
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Btc == false) {
+			return false;
+		}
+		Btc o = (Btc) obj;
+		if(this.hasValue() != o.hasValue()) {
+			return false;
+		}
+		if(this.hasValue() == false) {
+			return true;
+		}
+		if(this.value.equals(o.value)) {
+			return true;
+		}
+		return false;
+	}
 
 
 }

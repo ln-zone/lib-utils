@@ -33,5 +33,9 @@ public class Log {
 		event = Require.notNull(message, "event");
 		Logs.getInstance().addLog(this);
 	}
+	
+	public static Log build() {
+		return new Log();
+	}
 
 }

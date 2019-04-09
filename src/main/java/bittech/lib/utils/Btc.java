@@ -257,6 +257,10 @@ public class Btc implements Serializable {
 		}
 		return false;
 	}
+	
+	public static Btc noValue() {
+		return new Btc();
+	}
 
 
 }

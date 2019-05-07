@@ -161,7 +161,6 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("-123.40000000:000", new Btc("-123.4").toString());
 		Assert.assertEquals("-0.00100000:000", new Btc("-0.001").toString());
 		
-		Assert.assertEquals("", new Btc(null).toString());
 		Assert.assertEquals("", new Btc("").toString());
 	}
 	

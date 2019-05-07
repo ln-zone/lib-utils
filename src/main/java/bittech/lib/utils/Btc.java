@@ -16,6 +16,11 @@ public class Btc implements Serializable {
 	public Btc() {
 		this.value = "";
 	}
+	
+	public Btc(Btc btcToCopy) {
+		Require.notNull(btcToCopy, "toCopy");
+		this.value = btcToCopy.value;
+	}
 
 	public Btc(String value) {
 		try {
@@ -260,6 +265,10 @@ public class Btc implements Serializable {
 	
 	public static Btc noValue() {
 		return new Btc();
+	}
+	
+	public static boolean HasValue(Btc btc) {
+		return btc != null && btc.hasValue();
 	}
 
 

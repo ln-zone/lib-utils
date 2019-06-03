@@ -32,6 +32,11 @@ public class SystemExecTest extends TestCase {
 		Assert.assertNotEquals("Output is null", null, resp.output);
 		Assert.assertTrue("Invalid output", resp.output.contains("more from util-linux"));
 	}
+	
+	public void testPureExec() throws Exception {
+		Process p = Runtime.getRuntime().exec("java -v");
+		
+	}
 
 	// TODO: Test under not passed. Why?
 	// public void testErrOutput() throws Exception {

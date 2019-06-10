@@ -45,5 +45,4 @@ public class Notificator<T extends Object> implements AutoCloseable {
 		singleThreadPool.awaitTermination(20, TimeUnit.SECONDS);
 	}
 
-
 }

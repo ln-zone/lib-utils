@@ -82,7 +82,7 @@ public class Logs {
 
 	private synchronized void save() throws StoredException {
 		try {
-			try (PrintWriter out = new PrintWriter("/root/ln/logs.json")) {
+			try (PrintWriter out = new PrintWriter("logs.json")) {
 				JsonBuilder.build().toJson(list, out);
 			}
 		} catch (Exception ex) {
@@ -92,7 +92,7 @@ public class Logs {
 
 	private synchronized void load() {
 		try {
-			File file = new File("/root/ln/logs.json");
+			File file = new File("logs.json");
 			LOGGER.debug("Loading logs");
 			if (file.exists()) {
 				try (FileReader reader = new FileReader(file)) {

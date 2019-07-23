@@ -98,11 +98,11 @@ public class Config {
 	private static Config load(File file) throws StoredException {
 		try {
 			Require.notNull(file, "file");
+			Config c = new Config();
 			if (file.exists() == false) {
-				throw new Exception("No such file: " + file);
+				return c;
 			}
 			FileReader fileReader = new FileReader(file);
-			Config c = new Config();
 			Type type = new TypeToken<HashMap<String, RawJson>>() {
 			}.getType();
 			c.entries = JsonBuilder.build().fromJson(fileReader, type);

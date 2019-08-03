@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 
-public class JsonFile {
+public abstract class JsonFile {
 
 	private transient String fileName = null;
 	
@@ -22,6 +22,7 @@ public class JsonFile {
 		try (FileReader fr = new FileReader(fileName)) {
 			T ret = JsonBuilder.build().fromJson(fr, classOfT);
 			ret.changeFileName(fileName);
+			ret.onLoad();
 			return ret;
 		} catch (Exception ex) {
 			throw new StoredException("Cannot load settings from file " + fileName, ex);
@@ -38,4 +39,6 @@ public class JsonFile {
 			throw new StoredException("Cannot save settings to file " + fileName, ex);
 		}
 	}
+	
+	public abstract void onLoad();
 }

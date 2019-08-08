@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.reflect.TypeToken;
 
 import bittech.lib.utils.Config;
+import bittech.lib.utils.Notificator;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 
@@ -31,7 +32,9 @@ public class Logs {
 	}
 
 	private long logLifeTimeMillisec = 60 * 60 * 1000;
-
+	
+	Notificator<NewLogEvent> notificator = new Notificator<NewLogEvent>();
+	
 	private List<Log> list = new LinkedList<Log>();
 	// private List<Log> listCopy = new LinkedList<Log>();
 
@@ -44,6 +47,10 @@ public class Logs {
 		} else {
 			LOGGER.info("Logs will not be loaded and saved");
 		}
+	}
+	
+	public void registerListener(NewLogEvent newLogListener) {
+		notificator.register(newLogListener);
 	}
 
 	public synchronized void event(String message) {
@@ -58,6 +65,7 @@ public class Logs {
 		LOGGER.debug("Log added");
 		Log copied = JsonBuilder.build().fromJson(JsonBuilder.build().toJson(log), Log.class);
 		list.add(copied);
+		notificator.notifyThem((m) -> m.onNewLog(log));
 	}
 
 	public synchronized String getAsJson() {

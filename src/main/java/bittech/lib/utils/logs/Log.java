@@ -1,18 +1,18 @@
 package bittech.lib.utils.logs;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import bittech.lib.utils.FormattedTime;
-import bittech.lib.utils.Require;
 import bittech.lib.utils.FormattedTime.Precision;
+import bittech.lib.utils.Require;
 
 public class Log {
 	
 	FormattedTime time;
 	long timeMillsec;
-	Map<String, Object> params = new HashMap<String, Object>();
+	Map<String, Object> params = new LinkedHashMap<String, Object>();
 	@SuppressWarnings("unused")
 	String event;
 	

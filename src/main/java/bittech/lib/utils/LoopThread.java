@@ -14,6 +14,14 @@ public abstract class LoopThread implements AutoCloseable {
 	
 	private int awaitTermination;
 	
+	public LoopThread() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public LoopThread(int methodDelta, int awaitTermination) {
+		start(methodDelta, awaitTermination);
+	}
+	
 	public void start(int methodDelta, int awaitTermination) {
 		Require.inRange(methodDelta, 0, Integer.MAX_VALUE, "methodDelta");
 		this.awaitTermination = Require.inRange(awaitTermination, 0, Integer.MAX_VALUE, "awaitTermination");

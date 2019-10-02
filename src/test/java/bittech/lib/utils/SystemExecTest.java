@@ -2,9 +2,6 @@ package bittech.lib.utils;
 
 import org.junit.Assert;
 
-import bittech.lib.utils.Config;
-import bittech.lib.utils.ExecResponse;
-import bittech.lib.utils.SystemExec;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -34,8 +31,7 @@ public class SystemExecTest extends TestCase {
 	}
 	
 	public void testPureExec() throws Exception {
-		Process p = Runtime.getRuntime().exec("java -v");
-		
+		Runtime.getRuntime().exec("java -v");
 	}
 
 	// TODO: Test under not passed. Why?

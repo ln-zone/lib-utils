@@ -15,7 +15,7 @@ public class Notificator<T extends Object> implements AutoCloseable {
 	public synchronized void register(T observer) {
 		observers.add(observer);
 	}
-	
+
 	public synchronized void unregister(T observer) {
 		observers.remove(observer);
 	}
@@ -23,18 +23,16 @@ public class Notificator<T extends Object> implements AutoCloseable {
 	public synchronized void notifyThem(NotificationMethod<T> method) {
 
 		singleThreadPool.submit(() -> {
-			synchronized (this) {
-				final ExecutorService threadPool = Executors.newFixedThreadPool(observers.size());
-				for (T el : observers) {
-					threadPool.submit(() -> method.notifyHim(el));
-				}
-				threadPool.shutdown();
-				try {
-					threadPool.awaitTermination(10, TimeUnit.SECONDS);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			final ExecutorService threadPool = Executors.newFixedThreadPool(observers.size());
+			for (T el : observers) {
+				threadPool.submit(() -> method.notifyHim(el));
+			}
+			threadPool.shutdown();
+			try {
+				threadPool.awaitTermination(10, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		});
 	}

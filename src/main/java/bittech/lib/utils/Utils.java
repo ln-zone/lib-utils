@@ -1,12 +1,9 @@
 package bittech.lib.utils;
 
-import java.security.MessageDigest;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 
-import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 
 public class Utils {

@@ -6,6 +6,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import bittech.lib.utils.exceptions.StoredException;
+
 public class Notificator<T extends Object> implements AutoCloseable {
 
 	private Set<T> observers = new HashSet<T>();
@@ -38,9 +40,13 @@ public class Notificator<T extends Object> implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
-		singleThreadPool.shutdown();
-		singleThreadPool.awaitTermination(20, TimeUnit.SECONDS);
+	public void close() {
+		try {
+			singleThreadPool.shutdown();
+			singleThreadPool.awaitTermination(20, TimeUnit.SECONDS);
+		} catch (Exception ex) {
+			throw new StoredException("Error during closing notificator", ex);
+		}
 	}
 
 }

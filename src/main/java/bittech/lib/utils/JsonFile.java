@@ -31,7 +31,7 @@ public abstract class JsonFile {
 
 	public void save() {
 		if(fileName == null) {
-			// Just do not save
+			return;
 		}
 		try (FileWriter fl = new FileWriter(fileName)) {
 			JsonBuilder.build().toJson(this, fl);

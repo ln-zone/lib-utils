@@ -11,17 +11,17 @@ public abstract class LoopThread implements AutoCloseable {
 
 	private ExecutorService executor = null;
 	private AtomicBoolean working = new AtomicBoolean(false);
-	
+
 	private int awaitTermination;
-	
+
 	public LoopThread() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public LoopThread(int methodDelta, int awaitTermination) {
 		start(methodDelta, awaitTermination);
 	}
-	
+
 	public void start(int methodDelta, int awaitTermination) {
 		Require.inRange(methodDelta, 0, Integer.MAX_VALUE, "methodDelta");
 		this.awaitTermination = Require.inRange(awaitTermination, 0, Integer.MAX_VALUE, "awaitTermination");
@@ -41,20 +41,20 @@ public abstract class LoopThread implements AutoCloseable {
 			return null;
 		});
 	}
-	
+
 	abstract public void action();
-	
+
 	@Override
 	public void close() {
 		try {
-			if(executor != null) {
+			if (executor != null) {
 				working.set(false);
-				executor.shutdown();
+				executor.shutdownNow();
 				executor.awaitTermination(awaitTermination, TimeUnit.MILLISECONDS);
 			}
 		} catch (Exception ex) {
 			throw new StoredException("Exception during closing loop thread", ex);
 		}
 	}
-	
+
 }

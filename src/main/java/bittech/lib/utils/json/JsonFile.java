@@ -1,10 +1,10 @@
-package bittech.lib.utils;
+package bittech.lib.utils.json;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 
+import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
-import bittech.lib.utils.json.JsonBuilder;
 
 public abstract class JsonFile {
 

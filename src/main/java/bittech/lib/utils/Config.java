@@ -33,6 +33,10 @@ public class Config {
 	public static void loadEmptyConfig() {
 		instance = new Config();
 	}
+	
+	public static void setConfig(Config config) {
+		instance = config;
+	}	
 
 	private Config() {
 	}

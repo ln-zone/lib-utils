@@ -1,43 +1,43 @@
 package bittech.lib.utils.json;
 
-import java.io.FileReader;
-import java.io.FileWriter;
-
 import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
+import bittech.lib.utils.storage.Storage;
 
 public abstract class JsonFile {
 
-	private transient String fileName = null;
+	private transient String id = null;
+	private transient Storage storage = null;
 	
 	public JsonFile() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void changeFileName(String fileName) {
-		this.fileName = Require.notEmpty(fileName, "fileName");
+	protected void setId(String id) {
+		this.id = Require.notEmpty(id, "id");
+	}
+	
+	protected void setStorage(Storage storage) {
+		this.storage = Require.notNull(storage, "storage");
 	}
 
-	public static <T extends JsonFile> T load(String fileName, Class<T> classOfT) {
-		try (FileReader fr = new FileReader(fileName)) {
-			T ret = JsonBuilder.build().fromJson(fr, classOfT);
-			ret.changeFileName(fileName);
+	public static <T extends JsonFile> T load(Storage storage, String id, Class<T> classOfT) {
+		try {
+			T ret = storage.load(id, classOfT);
+			ret.setStorage(storage);
+			ret.setId(id);
 			ret.onLoad();
 			return ret;
 		} catch (Exception ex) {
-			throw new StoredException("Cannot load settings from file " + fileName, ex);
+			throw new StoredException("Cannot load settings from storage with id " + id, ex);
 		}
 	}
 
 	public void save() {
-		if(fileName == null) {
+		if(id == null) {
 			return;
-		}
-		try (FileWriter fl = new FileWriter(fileName)) {
-			JsonBuilder.build().toJson(this, fl);
-		} catch (Exception ex) {
-			throw new StoredException("Cannot save settings to file " + fileName, ex);
-		}
+		} // TODO: Pomyslec
+		storage.save(id, this);
 	}
 	
 	public abstract void onLoad();

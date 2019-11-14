@@ -145,6 +145,7 @@ public class ExceptionManagerTest extends TestCase {
 
 	public void testToLogOwnConverter() throws InterruptedException {
 
+		// rejestrujemy własnego convertera
 		ExceptionManager.getInstance().registerConverter((exception) -> {
 
 			try {
@@ -165,10 +166,11 @@ public class ExceptionManagerTest extends TestCase {
 				
 				return false;
 			} catch (Exception ex) {
-				throw new StoredException("Cannot convert exteption with ID = " + exception.getId() + " to log", ex);
+				throw new StoredException("Cannot convert exception with ID = " + exception.getId() + " to log", ex);
 			}
 		});
 
+		// Tworzymy wyjątek
 		try {
 			try {
 				throw new StoredException("No such user: abc", null);
@@ -185,6 +187,7 @@ public class ExceptionManagerTest extends TestCase {
 
 		Assert.assertEquals(1, Logs.getInstance().count());
 
+		// Poniżej pobieramy tego loga i sprawdzamy czy zawiera dokłądnie to co potrzeba
 		Log log = Logs.getInstance().getLog(0);
 
 		JSONObject obj = new JSONObject(JsonBuilder.build().toJson(log));

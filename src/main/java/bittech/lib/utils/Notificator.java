@@ -1,6 +1,8 @@
 package bittech.lib.utils;
 
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,8 +16,17 @@ public class Notificator<T extends Object> implements AutoCloseable {
 
 	final ExecutorService singleThreadPool = Executors.newFixedThreadPool(1);
 	
+	private static List<Notificator<?>> allNotif = new LinkedList<Notificator<?>>();
+	
+//	public static void stopAll() {
+//		for(Notificator<?> n : allNotif) {
+//			n.close();
+//		}
+//		allNotif.clear();
+//	}
+	
 	public Notificator() {
-
+		allNotif.add(this);
 	}
 
 	public synchronized void register(T observer) {

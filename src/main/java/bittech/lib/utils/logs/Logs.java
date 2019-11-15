@@ -52,6 +52,10 @@ public class Logs {
 	public void registerListener(NewLogEvent newLogListener) {
 		notificator.register(newLogListener);
 	}
+	
+	public synchronized Log getLog(int index) {
+		return list.get(index);
+	}
 
 	public synchronized void event(String message) {
 		Log log = new Log();

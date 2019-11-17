@@ -47,6 +47,8 @@ public class ExceptionsToLogsConverters implements AutoCloseable {
 		}
 		
 		Log log = Log.build();
+		log.setSeverity(Log.Severity.Error);
+		log.setInspectNeeded(true);
 		log.param("ID wyjątku", storedException.getId());
 		log.param("przyczyny", storedException.listReasons());
 		log.param("tekst wyjątku", storedException.getMessage());

@@ -10,11 +10,21 @@ import bittech.lib.utils.Require;
 
 public class Log {
 	
+	public enum Severity {
+		Info, Warning, Error
+	}
+	
 	FormattedTime time;
 	long timeMillsec;
+	Severity severity;
+	boolean inspectNeeded;
 	Map<String, Object> params = new LinkedHashMap<String, Object>();
-	@SuppressWarnings("unused")
 	String event;
+	
+	public Log() {
+		this.severity = Severity.Info;
+		this.inspectNeeded = false;
+	}
 	
 	public Log param(String name, Object value) {
 		params.put(name, value);
@@ -32,6 +42,16 @@ public class Log {
 		time = new FormattedTime(now, Precision.MILLISECONDS);
 		event = Require.notNull(message, "event");
 		Logs.getInstance().addLog(this);
+	}
+	
+	public Log setSeverity(Severity severity) {
+		this.severity = Require.notNull(severity, "severity");
+		return this;
+	}
+	
+	public Log setInspectNeeded(boolean inspectNeeded) {
+		this.inspectNeeded = inspectNeeded;
+		return this;
 	}
 	
 	public static Log build() {

@@ -130,6 +130,8 @@ public class ExceptionManagerTest extends TestCase {
 
 		Assert.assertNotNull(obj.getString("time"));
 		Assert.assertNotNull(obj.getLong("timeMillsec") > 1570000000000L);
+		Assert.assertEquals(obj.getEnum(Log.Severity.class, "severity"), Log.Severity.Error);
+		Assert.assertEquals(obj.getBoolean("inspectNeeded"), true);
 		Assert.assertTrue(obj.getJSONObject("params").getLong("ID wyjątku") > 0);
 		Assert.assertEquals("Cannot process command", obj.getJSONObject("params").getString("tekst wyjątku"));
 		
@@ -157,8 +159,11 @@ public class ExceptionManagerTest extends TestCase {
 				if (exception.getCause() != null && exception.getCause().getMessage().contains("Login user failed")) {
 					String userName = StringUtils.substringAfter(exception.getCause().getMessage(),
 							"Login user failed: ");
+					
+					log.setSeverity(Log.Severity.Warning);
+					log.setInspectNeeded(false);
+					
 					Require.notEmpty(userName, "userName");
-
 					log.param("Nazwa użytkownika", userName);
 					log.event("Błąd logowania użytkownika");
 					return true;
@@ -194,6 +199,9 @@ public class ExceptionManagerTest extends TestCase {
 
 		Assert.assertNotNull(obj.getString("time"));
 		Assert.assertNotNull(obj.getLong("timeMillsec") > 1570000000000L);
+		Assert.assertEquals(obj.getEnum(Log.Severity.class, "severity"), Log.Severity.Warning);
+		Assert.assertEquals(obj.getBoolean("inspectNeeded"), false);
+		
 		Assert.assertTrue(obj.getJSONObject("params").getLong("ID wyjątku") > 0);
 		Assert.assertEquals("Cannot process command", obj.getJSONObject("params").getString("tekst wyjątku"));
 		

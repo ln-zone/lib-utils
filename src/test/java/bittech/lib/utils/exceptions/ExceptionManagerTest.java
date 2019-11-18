@@ -1,13 +1,5 @@
 package bittech.lib.utils.exceptions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.junit.Assert;
-
 import bittech.lib.utils.Config;
 import bittech.lib.utils.Require;
 import bittech.lib.utils.json.JsonBuilder;
@@ -16,6 +8,13 @@ import bittech.lib.utils.logs.Logs;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.junit.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExceptionManagerTest extends TestCase {
 
@@ -32,7 +31,7 @@ public class ExceptionManagerTest extends TestCase {
 	}
 
 	@Override
-	public void setUp() throws InterruptedException {
+	public void setUp() {
 		Config.loadEmptyConfig();
 		Config.getInstance().addEntry("saveLogs", false);
 		Config.getInstance().addEntry("pushToLogs", true);

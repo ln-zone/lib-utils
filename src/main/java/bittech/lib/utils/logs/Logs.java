@@ -34,7 +34,7 @@ public class Logs {
 	private long logLifeTimeMillisec = 60 * 60 * 1000;
 	
 	Notificator<NewLogEvent> notificator = new Notificator<NewLogEvent>();
-	
+	Notificator<OnLogChange> notificatorForMark = new Notificator<>();
 	private List<Log> list = new LinkedList<Log>();
 	// private List<Log> listCopy = new LinkedList<Log>();
 
@@ -52,6 +52,10 @@ public class Logs {
 	public void registerListener(NewLogEvent newLogListener) {
 		notificator.register(newLogListener);
 	}
+	public void registerListenerForMark(OnLogChange onLogChange){
+		notificatorForMark.register(onLogChange);
+	}
+
 	
 	public synchronized Log getLog(int index) {
 		return list.get(index);
@@ -70,6 +74,7 @@ public class Logs {
 		Log copied = JsonBuilder.build().fromJson(JsonBuilder.build().toJson(log), Log.class);
 		list.add(copied);
 		notificator.notifyThem((m) -> m.onNewLog(log));
+		notificatorForMark.notifyThem((m)->m.OnLogChange(log));
 	}
 
 	public synchronized String getAsJson() {
@@ -143,6 +148,13 @@ public class Logs {
 
 	public synchronized void clear() {
 		list.clear();
+	}
+	public void markInspected(long timeMilisec){
+		for (Log e:list) {
+			if(e.timeMillsec==timeMilisec){
+				e.inspectNeeded=false;
+			}
+		}
 	}
 
 }

@@ -9,11 +9,17 @@ import bittech.lib.utils.FormattedTime.Precision;
 import bittech.lib.utils.Require;
 
 public class Log {
-	
-	public enum Severity {
+
+
+
+    public enum Severity {
 		Info, Warning, Error
 	}
-	
+
+	public long getTimeMillsec() {
+		return timeMillsec;
+	}
+
 	FormattedTime time;
 	long timeMillsec;
 	Severity severity;

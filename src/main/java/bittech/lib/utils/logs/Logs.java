@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import bittech.lib.utils.Require;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +24,7 @@ public class Logs {
 	private final static Logger LOGGER = LoggerFactory.getLogger(Logs.class);
 
 	static final Logs instance = new Logs();
-	
+
 	final boolean printLogs;
 
 	public static synchronized Logs getInstance() {
@@ -33,9 +32,10 @@ public class Logs {
 	}
 
 	private long logLifeTimeMillisec = 60 * 60 * 1000;
-	
+
 	Notificator<NewLogEvent> notificator = new Notificator<NewLogEvent>();
-	Notificator<OnLogChange> notificatorForMark = new Notificator<>();
+	Notificator<LogChangedEvent> notificatorForMark = new Notificator<>();
+
 	private List<Log> list = new LinkedList<Log>();
 	// private List<Log> listCopy = new LinkedList<Log>();
 
@@ -49,15 +49,15 @@ public class Logs {
 			LOGGER.info("Logs will not be loaded and saved");
 		}
 	}
-	
+
 	public void registerListener(NewLogEvent newLogListener) {
 		notificator.register(newLogListener);
 	}
-	public void registerListenerForMark(OnLogChange onLogChange){
+
+	public void registerListenerForMark(LogChangedEvent onLogChange) {
 		notificatorForMark.register(onLogChange);
 	}
 
-	
 	public synchronized Log getLog(int index) {
 		return list.get(index);
 	}
@@ -68,14 +68,13 @@ public class Logs {
 	}
 
 	public synchronized void addLog(Log log) {
-		if(printLogs) {
+		if (printLogs) {
 			System.out.println("LOG: " + log.event);
 		}
 		LOGGER.debug("Log added");
 		Log copied = JsonBuilder.build().fromJson(JsonBuilder.build().toJson(log), Log.class);
 		list.add(copied);
 		notificator.notifyThem((m) -> m.onNewLog(log));
-		notificatorForMark.notifyThem((m)->m.OnLogChange(log));
 	}
 
 	public synchronized String getAsJson() {
@@ -125,22 +124,6 @@ public class Logs {
 			new StoredException("Cannot load logs", ex);
 		}
 	}
-	public Log searchForId(long id){
-		try{
-			Log logToReturn=null;
-		for (Log e:list) {
-			if(e.getTimeMillsec()==id) {
-				logToReturn=e;
-			}
-
-		}
-		Require.notNull(logToReturn,"logToReturn");
-		return logToReturn;
-
-		}catch (Exception ex){
-			throw new StoredException("Log with id "+id+" doesn't exist",ex.getCause());
-		}
-	}
 
 	private class SavingThread extends Thread {
 		@Override
@@ -166,10 +149,13 @@ public class Logs {
 	public synchronized void clear() {
 		list.clear();
 	}
-	public void markInspected(long timeMilisec){
-		for (Log e:list) {
-			if(e.timeMillsec==timeMilisec){
-				e.inspectNeeded=false;
+
+	public void markInspected(long timeMilisec) {
+		for (Log log : list) {
+			if (log.timeMillsec == timeMilisec) {
+				log.setInspectNeeded(false);
+				notificatorForMark.notifyThem((m) -> m.onLogChanged(log));
+				return;
 			}
 		}
 	}

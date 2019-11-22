@@ -16,17 +16,10 @@ public class Log {
 		Info, Warning, Error
 	}
 
-	public long getTimeMillsec() {
-		return timeMillsec;
-	}
-	public boolean getInspectNeeded(){
-    	return inspectNeeded;
-	}
-
 	FormattedTime time;
 	long timeMillsec;
 	Severity severity;
-	boolean inspectNeeded;
+	private boolean inspectNeeded;
 	Map<String, Object> params = new LinkedHashMap<String, Object>();
 	String event;
 	
@@ -56,6 +49,10 @@ public class Log {
 	public Log setSeverity(Severity severity) {
 		this.severity = Require.notNull(severity, "severity");
 		return this;
+	}
+	
+	public boolean getInspectNeeded(){
+    	return inspectNeeded;
 	}
 	
 	public Log setInspectNeeded(boolean inspectNeeded) {

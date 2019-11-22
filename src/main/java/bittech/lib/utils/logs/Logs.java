@@ -32,7 +32,7 @@ public class Logs {
 	}
 
 	private long logLifeTimeMillisec = 60 * 60 * 1000;
-
+	
 	Notificator<NewLogEvent> notificator = new Notificator<NewLogEvent>();
 	Notificator<LogChangedEvent> notificatorForMark = new Notificator<>();
 
@@ -50,11 +50,11 @@ public class Logs {
 		}
 	}
 
-	public void registerListener(NewLogEvent newLogListener) {
+	public void registerNewLogListener(NewLogEvent newLogListener) {
 		notificator.register(newLogListener);
 	}
 
-	public void registerListenerForMark(LogChangedEvent onLogChange) {
+	public void registerLogChangedListener(LogChangedEvent onLogChange) {
 		notificatorForMark.register(onLogChange);
 	}
 
@@ -150,7 +150,7 @@ public class Logs {
 		list.clear();
 	}
 
-	public void markInspected(long timeMilisec) {
+	public synchronized void markInspected(long timeMilisec) {
 		for (Log log : list) {
 			if (log.timeMillsec == timeMilisec) {
 				log.setInspectNeeded(false);
@@ -158,6 +158,14 @@ public class Logs {
 				return;
 			}
 		}
+	}
+	
+	public static void main(String[] args) {
+		
+		Logs.getInstance().registerNewLogListener((log) -> System.out.println(log)); 
+				
+		Logs.getInstance().markInspected(1234);
+
 	}
 
 }

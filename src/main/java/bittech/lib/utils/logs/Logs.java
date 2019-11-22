@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import bittech.lib.utils.Require;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,6 +123,22 @@ public class Logs {
 			}
 		} catch (Exception ex) {
 			new StoredException("Cannot load logs", ex);
+		}
+	}
+	public Log searchForId(long id){
+		try{
+			Log logToReturn=null;
+		for (Log e:list) {
+			if(e.getTimeMillsec()==id) {
+				logToReturn=e;
+			}
+
+		}
+		Require.notNull(logToReturn,"logToReturn");
+		return logToReturn;
+
+		}catch (Exception ex){
+			throw new StoredException("Log with id "+id+" doesn't exist",ex.getCause());
 		}
 	}
 

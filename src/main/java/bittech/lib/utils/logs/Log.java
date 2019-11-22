@@ -19,6 +19,9 @@ public class Log {
 	public long getTimeMillsec() {
 		return timeMillsec;
 	}
+	public boolean getInspectNeeded(){
+    	return inspectNeeded;
+	}
 
 	FormattedTime time;
 	long timeMillsec;

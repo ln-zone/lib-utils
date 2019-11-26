@@ -16,15 +16,15 @@ public class ExceptionManager {
 	private static final ExceptionManager instance = new ExceptionManager();
 
 	private Map<Long, ExceptionInfo> exceptions = new ConcurrentHashMap<Long, ExceptionInfo>();
-	
+
 	private final static boolean pushToLogs = Config.getInstance().getEntryOrDefault("pushToLogs", Boolean.class, true);
-	
+
 	private ExceptionsToLogsConverters exceptionsToLogsConverters = new ExceptionsToLogsConverters();
 
 	private ExceptionManager() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public synchronized void reset() {
 		exceptions.clear();
 		exceptionsToLogsConverters.close();
@@ -60,18 +60,18 @@ public class ExceptionManager {
 
 		exceptions.put(exceptionId, new ExceptionInfo(exception));
 		LOGGER.debug("Exception with id " + exceptionId + " created");
-		
-		if(pushToLogs) {
+
+		if (pushToLogs) {
 			exceptionsToLogsConverters.push(exception);
 		}
-		
+
 		return exceptionId;
 	}
 
 	public synchronized ExceptionInfo get(long exceptionId) {
 		return exceptions.get(exceptionId);
 	}
-	
+
 	public void registerConverter(ExceptionToLogConverter converter) {
 		exceptionsToLogsConverters.registerConverter(converter);
 	}

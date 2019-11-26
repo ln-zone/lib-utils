@@ -20,10 +20,11 @@ public class ConfigTests extends TestCase {
 	public static Test suite() {
 		return new TestSuite(ConfigTests.class);
 	}
-	
+
 	public void testBasic() throws UtilsException {
-		Config.loadFromJson("{\r\n    \"connectionKeys\": {\r\n        \"prv\":\"prv_key\",\r\n        \"pub\":\"pub_key\"\r\n    },\r\n    \"supportWebSocket\":true\r\n}");
+		Config.loadFromJson(
+				"{\r\n    \"connectionKeys\": {\r\n        \"prv\":\"prv_key\",\r\n        \"pub\":\"pub_key\"\r\n    },\r\n    \"supportWebSocket\":true\r\n}");
 		Assert.assertEquals(true, Config.getInstance().getEntry("supportWebSocket", Boolean.class).booleanValue());
 	}
-	
+
 }

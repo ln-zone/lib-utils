@@ -22,7 +22,7 @@ public class BtcTests extends TestCase {
 	public static Test suite() {
 		return new TestSuite(BtcTests.class);
 	}
-	
+
 	public void testToBitcoins() throws UtilsException {
 		Assert.assertEquals("0", new Btc("0.00000000:000").toBitcoins().toPlainString());
 		Assert.assertEquals("0", new Btc("0:000").toBitcoins().toPlainString());
@@ -37,7 +37,7 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("0.00000002123", new Btc("2:123").toBitcoins().toPlainString());
 		Assert.assertEquals("123.4", new Btc("123.4").toBitcoins().toPlainString());
 		Assert.assertEquals("0.001", new Btc("0.001").toBitcoins().toPlainString());
-		
+
 		Assert.assertEquals("0", new Btc("-0.00000000:000").toBitcoins().toPlainString());
 		Assert.assertEquals("0", new Btc("-0:000").toBitcoins().toPlainString());
 		Assert.assertEquals("-0.0000002", new Btc("-0.00000020:000").toBitcoins().toPlainString());
@@ -51,13 +51,14 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("-0.00000002123", new Btc("-2:123").toBitcoins().toPlainString());
 		Assert.assertEquals("-123.4", new Btc("-123.4").toBitcoins().toPlainString());
 		Assert.assertEquals("-0.001", new Btc("-0.001").toBitcoins().toPlainString());
-		
+
 		try {
 			new Btc().toBitcoins();
 			Assert.fail("No exceptin thrown");
-		} catch(Exception ex) {}
+		} catch (Exception ex) {
+		}
 	}
-	
+
 	public void testToMsat() throws UtilsException {
 		Assert.assertEquals(0L, new Btc("0.00000000:000").toMsat());
 		Assert.assertEquals(0L, new Btc("0:000").toMsat());
@@ -72,7 +73,7 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals(2123L, new Btc("2:123").toMsat());
 		Assert.assertEquals(12340000000000L, new Btc("123.4").toMsat());
 		Assert.assertEquals(100000000L, new Btc("0.001").toMsat());
-		
+
 		Assert.assertEquals(0L, new Btc("-0.00000000:000").toMsat());
 		Assert.assertEquals(0L, new Btc("-0:000").toMsat());
 		Assert.assertEquals(-20000L, new Btc("-0.00000020:000").toMsat());
@@ -86,13 +87,14 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals(-2123L, new Btc("-2:123").toMsat());
 		Assert.assertEquals(-12340000000000L, new Btc("-123.4").toMsat());
 		Assert.assertEquals(-100000000L, new Btc("-0.001").toMsat());
-		
+
 		try {
 			new Btc().toMsat();
 			Assert.fail("No exceptin thrown");
-		} catch(Exception ex) {}
+		} catch (Exception ex) {
+		}
 	}
-	
+
 	public void testToSat() throws UtilsException {
 		Assert.assertEquals("0", new Btc("0.00000000:000").toSat().toPlainString());
 		Assert.assertEquals("0", new Btc("0.0").toSat().toPlainString());
@@ -107,7 +109,7 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("2.123", new Btc("2:123").toSat().toPlainString());
 		Assert.assertEquals("12340000000", new Btc("123.4").toSat().toPlainString());
 		Assert.assertEquals("100000", new Btc("0.001").toSat().toPlainString());
-		
+
 		Assert.assertEquals("0", new Btc("-0.00000000:000").toSat().toPlainString());
 		Assert.assertEquals("0", new Btc("-0.0").toSat().toPlainString());
 		Assert.assertEquals("-20", new Btc("-0.00000020:000").toSat().toPlainString());
@@ -120,14 +122,14 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("-2", new Btc("-2").toSat().toPlainString());
 		Assert.assertEquals("-2.123", new Btc("-2:123").toSat().toPlainString());
 		Assert.assertEquals("-12340000000", new Btc("-123.4").toSat().toPlainString());
-		
+
 		try {
 			new Btc().toSat();
 			Assert.fail("No exceptin thrown");
-		} catch(Exception ex) {}
+		} catch (Exception ex) {
+		}
 	}
 
-	
 	public void testParseValid() throws UtilsException {
 		Assert.assertEquals("0.00000000:000", new Btc("0.00000000:000").toString());
 		Assert.assertEquals("0.00000000:000", new Btc("0:000").toString());
@@ -144,7 +146,7 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("0.00000002:123", new Btc("2:123").toString());
 		Assert.assertEquals("123.40000000:000", new Btc("123.4").toString());
 		Assert.assertEquals("0.00100000:000", new Btc("0.001").toString());
-		
+
 		Assert.assertEquals("0.00000000:000", new Btc("-0.00000000:000").toString());
 		Assert.assertEquals("0.00000000:000", new Btc("-0:000").toString());
 		Assert.assertEquals("0.00000000:000", new Btc("-0").toString());
@@ -160,10 +162,10 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("-0.00000002:123", new Btc("-2:123").toString());
 		Assert.assertEquals("-123.40000000:000", new Btc("-123.4").toString());
 		Assert.assertEquals("-0.00100000:000", new Btc("-0.001").toString());
-		
+
 		Assert.assertEquals("", new Btc("").toString());
 	}
-	
+
 	public void testFromBitcoins() throws UtilsException {
 		Assert.assertEquals("0.00000000:000", Btc.fromBitcoins(new BigDecimal("0")).toString());
 		Assert.assertEquals("0.00000000:000", Btc.fromBitcoins(new BigDecimal("-0")).toString());
@@ -176,22 +178,22 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("123.40000000:000", Btc.fromBitcoins(new BigDecimal("123.4")).toString());
 		Assert.assertEquals("0.00100000:000", Btc.fromBitcoins(new BigDecimal("0.001")).toString());
 		Assert.assertEquals("-0.00100000:000", Btc.fromBitcoins(new BigDecimal("-0.001")).toString());
-		
+
 		try {
 			Btc.fromBitcoins(new BigDecimal("0.001234567891")); // To many digits after point
 			Assert.fail("Exception not thrown");
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// Exception thrown - it is OK
 		}
-		
+
 		try {
 			Btc.fromBitcoins(new BigDecimal("1234567890")); // To many digits (too big number)
 			Assert.fail("Exception not thrown");
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// Exception thrown - it is OK
 		}
 	}
-	
+
 	public void testFromMsat() throws UtilsException {
 		Assert.assertEquals("0.00000000:000", Btc.fromMsat(0L).toString());
 		Assert.assertEquals("0.00123456:789", Btc.fromMsat(123456789L).toString());
@@ -200,22 +202,22 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("-123.40000000:000", Btc.fromMsat(-12340000000000L).toString());
 		Assert.assertEquals("0.00000000:001", Btc.fromMsat(1L).toString());
 		Assert.assertEquals("-0.00000000:001", Btc.fromMsat(-1L).toString());
-		
+
 		try {
-			Btc.fromMsat(22000000L*100000000L*1000L); // 100 mln bitcoins - To many digits (too big number)
+			Btc.fromMsat(22000000L * 100000000L * 1000L); // 100 mln bitcoins - To many digits (too big number)
 			Assert.fail("Exception not thrown");
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// Exception thrown - it is OK
 		}
-		
+
 		try {
-			Btc.fromMsat(-22000000L*100000000L*1000L); // 100 mln bitcoins - To many digits (too big number)
+			Btc.fromMsat(-22000000L * 100000000L * 1000L); // 100 mln bitcoins - To many digits (too big number)
 			Assert.fail("Exception not thrown");
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// Exception thrown - it is OK
 		}
 	}
-	
+
 	public void testFromSat() throws UtilsException {
 		Assert.assertEquals("0.00000000:000", Btc.fromSat(0L).toString());
 		Assert.assertEquals("0.00123456:000", Btc.fromSat(123456L).toString());
@@ -224,18 +226,18 @@ public class BtcTests extends TestCase {
 		Assert.assertEquals("123.40000000:000", Btc.fromSat(12340000000L).toString());
 		Assert.assertEquals("0.00000001:000", Btc.fromSat(1).toString());
 		Assert.assertEquals("-0.00000001:000", Btc.fromSat(-1).toString());
-		
+
 		try {
-			Btc.fromSat(22000000L*100000000L); // 100 mln bitcoins - To many digits (too big number)
+			Btc.fromSat(22000000L * 100000000L); // 100 mln bitcoins - To many digits (too big number)
 			Assert.fail("Exception not thrown");
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// Exception thrown - it is OK
 		}
-		
+
 		try {
-			Btc.fromSat(-22000000L*100000000L); // 100 mln bitcoins - To many digits (too big number)
+			Btc.fromSat(-22000000L * 100000000L); // 100 mln bitcoins - To many digits (too big number)
 			Assert.fail("Exception not thrown");
-		} catch(Exception ex) {
+		} catch (Exception ex) {
 			// Exception thrown - it is OK
 		}
 
@@ -277,7 +279,7 @@ public class BtcTests extends TestCase {
 			Assert.fail("No exception thrown");
 		} catch (Exception ex) {
 		}
-		
+
 		try {
 			new Btc("1:12");
 			Assert.fail("No exception thrown");
@@ -288,13 +290,13 @@ public class BtcTests extends TestCase {
 			Assert.fail("No exception thrown");
 		} catch (Exception ex) {
 		}
-		
+
 		try {
 			new Btc("1:3");
 			Assert.fail("No exception thrown");
 		} catch (Exception ex) {
 		}
-		
+
 		try {
 			new Btc("0.0000a000:000");
 			Assert.fail("No exception thrown");
@@ -305,7 +307,7 @@ public class BtcTests extends TestCase {
 			Assert.fail("No exception thrown");
 		} catch (Exception ex) {
 		}
-		
+
 	}
 
 }

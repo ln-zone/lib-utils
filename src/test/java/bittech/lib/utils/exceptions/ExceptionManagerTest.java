@@ -115,10 +115,10 @@ public class ExceptionManagerTest extends TestCase {
 		}
 
 		Assert.assertEquals(0, Logs.getInstance().count()); // Na razie nie ma z tego loga
-		
+
 		Thread.sleep(2000); // Czekamy 2 sekundy
-		
-		System.out.println(Logs.getInstance().getAsJson()); 
+
+		System.out.println(Logs.getInstance().getAsJson());
 
 		Assert.assertEquals(1, Logs.getInstance().count()); // Mamy nowego loga
 
@@ -133,7 +133,7 @@ public class ExceptionManagerTest extends TestCase {
 		Assert.assertEquals(obj.getBoolean("inspectNeeded"), true);
 		Assert.assertTrue(obj.getJSONObject("params").getLong("ID wyjątku") > 0);
 		Assert.assertEquals("Cannot process command", obj.getJSONObject("params").getString("tekst wyjątku"));
-		
+
 		Assert.assertEquals("Cannot process command", obj.getString("event"));
 
 		JSONArray reasons = obj.getJSONObject("params").getJSONArray("przyczyny");
@@ -158,16 +158,16 @@ public class ExceptionManagerTest extends TestCase {
 				if (exception.getCause() != null && exception.getCause().getMessage().contains("Login user failed")) {
 					String userName = StringUtils.substringAfter(exception.getCause().getMessage(),
 							"Login user failed: ");
-					
+
 					log.setSeverity(Log.Severity.Warning);
 					log.setInspectNeeded(false);
-					
+
 					Require.notEmpty(userName, "userName");
 					log.param("Nazwa użytkownika", userName);
 					log.event("Błąd logowania użytkownika");
 					return true;
 				}
-				
+
 				return false;
 			} catch (Exception ex) {
 				throw new StoredException("Cannot convert exception with ID = " + exception.getId() + " to log", ex);
@@ -200,14 +200,14 @@ public class ExceptionManagerTest extends TestCase {
 		Assert.assertNotNull(obj.getLong("timeMillsec") > 1570000000000L);
 		Assert.assertEquals(obj.getEnum(Log.Severity.class, "severity"), Log.Severity.Warning);
 		Assert.assertEquals(obj.getBoolean("inspectNeeded"), false);
-		
+
 		Assert.assertTrue(obj.getJSONObject("params").getLong("ID wyjątku") > 0);
 		Assert.assertEquals("Cannot process command", obj.getJSONObject("params").getString("tekst wyjątku"));
-		
-		Assert.assertEquals("Błąd logowania użytkownika", obj.getString("event"));	
-		
+
+		Assert.assertEquals("Błąd logowania użytkownika", obj.getString("event"));
+
 		Assert.assertEquals("abc", obj.getJSONObject("params").getString("Nazwa użytkownika"));
-		
+
 		JSONArray reasons = obj.getJSONObject("params").getJSONArray("przyczyny");
 		Assert.assertNotNull(reasons);
 		Assert.assertEquals(2, reasons.length());

@@ -11,7 +11,7 @@ public class ExceptionsToLogsConverters implements AutoCloseable {
 
 	private final List<StoredException> propositions = new LinkedList<StoredException>();
 	private final LoopThread LoopThread;
-	
+
 	private final List<ExceptionToLogConverter> converters = new LinkedList<ExceptionToLogConverter>();
 
 	public ExceptionsToLogsConverters() {
@@ -40,12 +40,12 @@ public class ExceptionsToLogsConverters implements AutoCloseable {
 	}
 
 	public void exceptionToLog(StoredException storedException) {
-		for(ExceptionToLogConverter exToLog : converters) {
-			if(exToLog.convert(storedException)) {
+		for (ExceptionToLogConverter exToLog : converters) {
+			if (exToLog.convert(storedException)) {
 				return;
 			}
 		}
-		
+
 		Log log = Log.build();
 		log.setSeverity(Log.Severity.Error);
 		log.setInspectNeeded(true);
@@ -63,7 +63,7 @@ public class ExceptionsToLogsConverters implements AutoCloseable {
 	public void close() {
 		LoopThread.close();
 	}
-	
+
 	public void registerConverter(ExceptionToLogConverter converter) {
 		converters.add(converter);
 	}

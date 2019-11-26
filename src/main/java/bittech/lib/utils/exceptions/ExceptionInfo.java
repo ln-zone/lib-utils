@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class ExceptionInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private long id = 0;
 	private String type;
 	private String message;
@@ -19,13 +19,13 @@ public class ExceptionInfo implements Serializable {
 		this.setStackTrace(ex.getStackTrace());
 		this.setCause(convert(ex.getCause()));
 	}
-	
+
 	private ExceptionInfo() {
-		
+
 	}
-	
+
 	private static ExceptionInfo convert(Throwable cause) {
-		if(cause == null) {
+		if (cause == null) {
 			return null;
 		}
 		ExceptionInfo inf = new ExceptionInfo();

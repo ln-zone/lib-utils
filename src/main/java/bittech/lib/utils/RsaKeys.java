@@ -5,7 +5,7 @@ package bittech.lib.utils;
  *
  */
 public class RsaKeys {
-	
+
 	private final String prv;
 	private final String pub;
 

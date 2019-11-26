@@ -16,7 +16,7 @@ public class Btc implements Serializable {
 	public Btc() {
 		this.value = "";
 	}
-	
+
 	public Btc(Btc btcToCopy) {
 		Require.notNull(btcToCopy, "toCopy");
 		this.value = btcToCopy.value;
@@ -180,22 +180,22 @@ public class Btc implements Serializable {
 		}
 		return fromMsat(this.toMsat() - value.toMsat());
 	}
-	
+
 	public double div(Btc value) {
 		Require.notNull(value, "value");
 		if (!this.hasValue() || !value.hasValue()) {
 			throw new RuntimeException("Cannot div Btc. No value assigned to Btc class");
 		}
-		return (double)this.toMsat() / value.toMsat();
+		return (double) this.toMsat() / value.toMsat();
 	}
-	
+
 	public Btc div(int value) {
 		if (!this.hasValue()) {
 			throw new RuntimeException("Cannot div Btc. No value assigned to Btc class");
 		}
 		return fromMsat(this.toMsat() / value);
 	}
-	
+
 	public Btc multi(int value) {
 		if (!this.hasValue()) {
 			throw new RuntimeException("Cannot div Btc. No value assigned to Btc class");
@@ -216,8 +216,8 @@ public class Btc implements Serializable {
 			long mili = Long.parseLong(smallSplited[1]);
 
 			long msat = mili + sato * 1000L + btc * 100000000000L;
-			if(value.charAt(0) == '-') {
-				msat =-msat;
+			if (value.charAt(0) == '-') {
+				msat = -msat;
 			}
 			return msat;
 		} catch (Throwable ex) {
@@ -240,36 +240,35 @@ public class Btc implements Serializable {
 			throw new RuntimeException("Cannot convert to Btc: " + value, ex);
 		}
 	}
-	
+
 	public boolean hasValue() {
 		return !"".equals(value);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof Btc == false) {
+		if (obj instanceof Btc == false) {
 			return false;
 		}
 		Btc o = (Btc) obj;
-		if(this.hasValue() != o.hasValue()) {
+		if (this.hasValue() != o.hasValue()) {
 			return false;
 		}
-		if(this.hasValue() == false) {
+		if (this.hasValue() == false) {
 			return true;
 		}
-		if(this.value.equals(o.value)) {
+		if (this.value.equals(o.value)) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	public static Btc noValue() {
 		return new Btc();
 	}
-	
+
 	public static boolean HasValue(Btc btc) {
 		return btc != null && btc.hasValue();
 	}
-
 
 }

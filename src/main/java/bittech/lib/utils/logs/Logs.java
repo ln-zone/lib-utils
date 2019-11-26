@@ -32,7 +32,7 @@ public class Logs {
 	}
 
 	private long logLifeTimeMillisec = 60 * 60 * 1000;
-	
+
 	Notificator<NewLogEvent> notificator = new Notificator<NewLogEvent>();
 	Notificator<LogChangedEvent> notificatorForMark = new Notificator<>();
 
@@ -159,11 +159,11 @@ public class Logs {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		
-		Logs.getInstance().registerNewLogListener((log) -> System.out.println(log)); 
-				
+
+		Logs.getInstance().registerNewLogListener((log) -> System.out.println(log));
+
 		Logs.getInstance().markInspected(1234);
 
 	}

@@ -13,12 +13,10 @@ import junit.framework.TestSuite;
 
 public class BtcJsonTest extends TestCase {
 
-	
 	private static final class TestClass {
 		public Btc cash;
 	}
 
-	
 	public BtcJsonTest(String testName) {
 		super(testName);
 	}
@@ -35,17 +33,17 @@ public class BtcJsonTest extends TestCase {
 		tc.cash = btc;
 
 		Gson g = JsonBuilder.build();
-		
+
 		return g.toJson(tc);
 	}
-	
+
 	private static Btc fromJson(String json) {
 		Gson g = JsonBuilder.build();
-		
+
 		TestClass tc = g.fromJson(json, TestClass.class);
 		return tc.cash;
 	}
-	
+
 	public void testToJson() throws UtilsException {
 		Assert.assertEquals("{\"cash\":\"1.01000000:000\"}", toJson(new Btc("1.01")));
 		Assert.assertEquals("{\"cash\":null}", toJson(null));
@@ -53,7 +51,7 @@ public class BtcJsonTest extends TestCase {
 		Assert.assertEquals("{\"cash\":\"0.00000123:000\"}", toJson(new Btc("123")));
 		Assert.assertEquals("{\"cash\":\"0.00000000:000\"}", toJson(new Btc("0")));
 	}
-	
+
 	public void testFromJson() throws UtilsException {
 		Assert.assertEquals(new Btc("1.01").toString(), fromJson("{\"cash\":\"1.01000000:000\"}").toString());
 		Assert.assertEquals(new Btc("").toString(), fromJson("{\"cash\":\"\"}").toString());
@@ -62,6 +60,5 @@ public class BtcJsonTest extends TestCase {
 		Assert.assertEquals(new Btc("0").toString(), fromJson("{\"cash\":\"0.00000000:000\"}").toString());
 		Assert.assertEquals(new Btc("0").toString(), fromJson("{\"cash\":\"0\"}").toString());
 	}
-
 
 }

@@ -19,7 +19,7 @@ public class SeparateFilesStorage implements Storage {
 			throw new StoredException("Cannot save settings to file " + fileName, ex);
 		}
 	}
-	
+
 	public <T> T load(String id, Class<T> classOfT) {
 		String fileName = Require.notEmpty(id, "id") + ".json";
 		try (FileReader fr = new FileReader(fileName)) {

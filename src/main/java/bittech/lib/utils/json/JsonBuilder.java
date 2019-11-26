@@ -15,8 +15,7 @@ public class JsonBuilder {
 	public static final Gson build() {
 		return (new GsonBuilder()).registerTypeAdapter(RawJson.class, new RawJsonAdapter())
 				.registerTypeAdapter(Btc.class, new BtcAdapter())
-				.registerTypeAdapter(FormattedTime.class, new FormattedTimeAdapter())
-				.serializeNulls().create();
+				.registerTypeAdapter(FormattedTime.class, new FormattedTimeAdapter()).serializeNulls().create();
 	}
 
 	public static boolean isValid(String Json) {

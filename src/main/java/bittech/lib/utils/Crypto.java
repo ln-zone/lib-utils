@@ -54,7 +54,7 @@ public class Crypto {
 			Require.notNull(msg, "msg");
 			Require.notNull(key, "key");
 			Cipher cipher = Cipher.getInstance(algorithm);
-			if(key.length() > keylength) {
+			if (key.length() > keylength) {
 				cipher.init(Cipher.ENCRYPT_MODE, getPrivateKey(key));
 			} else {
 				cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(key));
@@ -68,7 +68,7 @@ public class Crypto {
 	public static String decryptText(String msg, String key) throws StoredException {
 		try {
 			Cipher cipher = Cipher.getInstance(algorithm);
-			if(key.length() > keylength) {
+			if (key.length() > keylength) {
 				cipher.init(Cipher.DECRYPT_MODE, getPrivateKey(key));
 			} else {
 				cipher.init(Cipher.DECRYPT_MODE, getPublicKey(key));

@@ -6,33 +6,33 @@ public class Require {
 
 	private Require() {
 	}
-	
+
 	public static <T> T notNull(T obj, String name) {
-		if(obj == null) {
+		if (obj == null) {
 			throw new StoredException("\"" + name + "\" cannot be null", null);
 		}
 		return obj;
 	}
-	
+
 	public static int inRange(int value, int valFrom, int valTo, String name) {
-		if((value >= valFrom) && (value <= valTo)) {
+		if ((value >= valFrom) && (value <= valTo)) {
 			return value;
 		}
 		throw new StoredException("\"" + name + "\" must be value between " + valFrom + " and " + valTo, null);
 	}
-	
+
 	public static long inRange(long value, long valFrom, long valTo, String name) {
-		if((value >= valFrom) && (value <= valTo)) {
+		if ((value >= valFrom) && (value <= valTo)) {
 			return value;
 		}
 		throw new StoredException("\"" + name + "\" must be value between " + valFrom + " and " + valTo, null);
 	}
 
 	public static String notEmpty(String value, String name) {
-		if(value!=null && !value.equals("")) {
+		if (value != null && !value.equals("")) {
 			return value;
 		}
-		throw new StoredException("\"" + name + "\" cannot be empty string", null); 
+		throw new StoredException("\"" + name + "\" cannot be empty string", null);
 	}
-	
+
 }

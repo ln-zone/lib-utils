@@ -17,16 +17,16 @@ public abstract class LoopThread implements AutoCloseable {
 	public LoopThread() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public static LoopThread build(int methodDelta, int awaitTermination, Runnable runnable) {
-		
+
 		return new LoopThread(methodDelta, awaitTermination) {
 
 			@Override
 			public void action() {
 				runnable.run();
 			}
-			
+
 		};
 	}
 

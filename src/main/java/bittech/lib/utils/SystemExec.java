@@ -52,15 +52,15 @@ public class SystemExec {
 	public static ExecResponse exec(String cmd, long timeout) throws StoredException {
 		return exec(cmd, timeout, null);
 	}
-	
+
 	public static ExecResponse exec(String cmd, long timeout, ExecProcess execProcess) throws StoredException {
 		Process proc = null;
 		try {
 			Runtime rt = Runtime.getRuntime();
 
 			proc = rt.exec(cmd);
-			
-			if(execProcess != null) {
+
+			if (execProcess != null) {
 				execProcess.setProcess(proc);
 			}
 
@@ -92,8 +92,7 @@ public class SystemExec {
 			}
 		}
 	}
-	
-	
+
 	public static void main(String[] args) {
 //		SystemExec ses = new SystemExec();
 		SystemExec.exec("pwd", 10000);

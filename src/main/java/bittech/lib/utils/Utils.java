@@ -9,10 +9,10 @@ import bittech.lib.utils.json.JsonBuilder;
 public class Utils {
 
 	public static boolean deepEquals(Object r1, Object r2) {
-		if(r1 == null && r2 == null) {
+		if (r1 == null && r2 == null) {
 			return true;
 		}
-		if(r1 == null || r2 == null) {
+		if (r1 == null || r2 == null) {
 			return false;
 		}
 		Gson gson = new Gson();
@@ -35,7 +35,5 @@ public class Utils {
 	public static void prn(Object obj) {
 		System.out.println(JsonBuilder.build().toJson(obj));
 	}
-	
-
 
 }

@@ -8,7 +8,7 @@ public abstract class JsonFile {
 
 	private transient String id = null;
 	private transient Storage storage = null;
-	
+
 	public JsonFile() {
 		// TODO Auto-generated constructor stub
 	}
@@ -16,7 +16,7 @@ public abstract class JsonFile {
 	protected void setId(String id) {
 		this.id = Require.notEmpty(id, "id");
 	}
-	
+
 	protected void setStorage(Storage storage) {
 		this.storage = Require.notNull(storage, "storage");
 	}
@@ -34,11 +34,11 @@ public abstract class JsonFile {
 	}
 
 	public void save() {
-		if(id == null) {
+		if (id == null) {
 			return;
 		} // TODO: Pomyslec
 		storage.save(id, this);
 	}
-	
+
 	public abstract void onLoad();
 }

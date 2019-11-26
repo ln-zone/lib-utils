@@ -94,7 +94,7 @@ public class NotificatorTests extends TestCase {
 		int numObservers = 30;
 
 		List<ToNotifyNumber> observers = new LinkedList<ToNotifyNumber>();
-		
+
 		for (int i = 0; i < numObservers; i++) {
 			observers.add(new ToNotifyNumber());
 		}
@@ -113,7 +113,7 @@ public class NotificatorTests extends TestCase {
 					notificator.notifyThem((toNotify) -> toNotify.numberGenerated(num));
 				}));
 			}
-			
+
 			for (Thread th : threads) {
 				th.start();
 			}
@@ -159,7 +159,5 @@ public class NotificatorTests extends TestCase {
 		}
 
 	}
-
-
 
 }

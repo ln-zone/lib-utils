@@ -54,9 +54,9 @@ public class RawJsonAdapter extends TypeAdapter<RawJson> {
 			jsonBuilder.append("null,");
 			in.nextNull();
 			break;
-		}		
+		}
 	}
-	
+
 	private static final void readElements(final JsonReader in, final StringBuilder jsonBuilder) throws IOException {
 
 		while (in.hasNext()) {
@@ -70,23 +70,23 @@ public class RawJsonAdapter extends TypeAdapter<RawJson> {
 			jsonBuilder.delete(jsonBuilder.length() - 1, jsonBuilder.length());
 		}
 	}
-	
+
 	private static final void readObject(final JsonReader in, final StringBuilder jsonBuilder) throws IOException {
 		jsonBuilder.append("{");
 		in.beginObject();
 
 		readElements(in, jsonBuilder);
-		
+
 		jsonBuilder.append("}");
 		in.endObject();
 	}
-	
+
 	private static final void readArray(final JsonReader in, final StringBuilder jsonBuilder) throws IOException {
 		jsonBuilder.append("[");
 		in.beginArray();
 
 		readElements(in, jsonBuilder);
-		
+
 		jsonBuilder.append("]");
 		in.endArray();
 	}
@@ -100,15 +100,14 @@ public class RawJsonAdapter extends TypeAdapter<RawJson> {
 		return new RawJson(ret);
 
 	}
-	
 
 	private static String addEscapeChars(String crunchifyJSON) {
 		final StringBuilder crunchifyNewJSON = new StringBuilder();
- 
+
 		// StringCharacterIterator class iterates over the entire String
 		StringCharacterIterator iterator = new StringCharacterIterator(crunchifyJSON);
 		char myChar = iterator.current();
- 
+
 		// DONE = \\uffff (not a character)
 		while (myChar != StringCharacterIterator.DONE) {
 			if (myChar == '\"') {
@@ -128,7 +127,7 @@ public class RawJsonAdapter extends TypeAdapter<RawJson> {
 			} else if (myChar == '\b') {
 				crunchifyNewJSON.append("\\b");
 			} else {
- 
+
 				// nothing matched - just as text as it is.
 				crunchifyNewJSON.append(myChar);
 			}

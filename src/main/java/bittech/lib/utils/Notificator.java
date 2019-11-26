@@ -11,20 +11,20 @@ import java.util.concurrent.TimeUnit;
 import bittech.lib.utils.exceptions.StoredException;
 
 public class Notificator<T extends Object> implements AutoCloseable {
-	
+
 	private Set<T> observers = new HashSet<T>();
 
 	final ExecutorService singleThreadPool = Executors.newFixedThreadPool(1);
-	
+
 	private static List<Notificator<?>> allNotif = new LinkedList<Notificator<?>>();
-	
+
 //	public static void stopAll() {
 //		for(Notificator<?> n : allNotif) {
 //			n.close();
 //		}
 //		allNotif.clear();
 //	}
-	
+
 	public Notificator() {
 		allNotif.add(this);
 	}
@@ -39,15 +39,15 @@ public class Notificator<T extends Object> implements AutoCloseable {
 
 	public synchronized void notifyThem(NotificationMethod<T> method) {
 		try {
-		
+
 			if (singleThreadPool.isShutdown()) {
 				throw new Exception("Thread pool was shutdown", null);
 			}
-			
+
 			if (singleThreadPool.isTerminated()) {
 				throw new Exception("Thread pool was terminated", null);
 			}
-			
+
 			singleThreadPool.submit(() -> {
 				final ExecutorService threadPool = Executors.newFixedThreadPool(observers.size());
 				for (T el : observers) {

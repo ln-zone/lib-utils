@@ -16,7 +16,7 @@ import bittech.lib.utils.json.JsonBuilder;
 import bittech.lib.utils.json.RawJson;
 
 public class Config {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(Config.class);
 
 	public static void main(String[] args) {
@@ -33,10 +33,10 @@ public class Config {
 	public static void loadEmptyConfig() {
 		instance = new Config();
 	}
-	
+
 	public static void setConfig(Config config) {
 		instance = config;
-	}	
+	}
 
 	private Config() {
 	}

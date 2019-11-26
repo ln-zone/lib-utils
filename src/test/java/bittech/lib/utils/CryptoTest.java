@@ -27,7 +27,7 @@ public class CryptoTest extends TestCase {
 
 	public void testBasic() throws StoredException {
 		RsaKeys keys = Crypto.generateKeys();
-		
+
 		String text = "po co mi Buty?";
 		String ePrv = Crypto.encryptText(text, keys.getPrv());
 		String ePub = Crypto.encryptText(text, keys.getPub());

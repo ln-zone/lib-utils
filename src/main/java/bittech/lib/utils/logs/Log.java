@@ -17,8 +17,8 @@ public class Log {
 	}
 
 	FormattedTime time;
-	long timeMillsec;
-	Severity severity;
+    long timeMillsec;
+    Severity severity;
 	private boolean inspectNeeded;
 	Map<String, Object> params = new LinkedHashMap<String, Object>();
 	String event;
@@ -59,7 +59,27 @@ public class Log {
 		this.inspectNeeded = inspectNeeded;
 		return this;
 	}
-	
+
+	public FormattedTime getTime() {
+		return time;
+	}
+
+	public long getTimeMillsec() {
+		return timeMillsec;
+	}
+
+	public Severity getSeverity() {
+		return severity;
+	}
+
+	public boolean isInspectNeeded() {
+		return inspectNeeded;
+	}
+
+	public String getEvent() {
+		return event;
+	}
+
 	public static Log build() {
 		return new Log();
 	}

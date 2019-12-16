@@ -87,11 +87,9 @@ public class Logs {
 
 		Iterator<Log> i = list.iterator();
 		while (i.hasNext()) {
-			Log log = i.next(); // must be called before you can call i.remove()
-			if (log.timeMillsec < oldestTime) {
+			Log log = i.next();
+			if (log.timeMillsec < oldestTime && log.getInspectNeeded() == false) {
 				i.remove();
-			} else {
-				return;
 			}
 		}
 

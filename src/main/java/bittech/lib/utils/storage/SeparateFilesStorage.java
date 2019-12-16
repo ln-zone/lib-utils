@@ -9,10 +9,21 @@ import bittech.lib.utils.json.JsonBuilder;
 
 public class SeparateFilesStorage implements Storage {
 
+	private final String directory;
+
+	public SeparateFilesStorage() {
+		this.directory = null;
+	}
+
+	public SeparateFilesStorage(String directory) {
+		this.directory = Require.notEmpty(directory, "directory");
+	}
+
 	@Override
 	public void save(String id, Object object) {
 		Require.notNull(object, "object to store");
 		String fileName = Require.notEmpty(id, "id") + ".json";
+		fileName = directory == null ? fileName : directory + "/" + fileName;
 		try (FileWriter fl = new FileWriter(fileName)) {
 			JsonBuilder.build().toJson(object, fl);
 		} catch (Exception ex) {

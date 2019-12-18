@@ -36,8 +36,15 @@ public class Notificator<T extends Object> implements AutoCloseable {
 	public synchronized void unregister(T observer) {
 		observers.remove(observer);
 	}
+	
+	public synchronized int countObservers() {
+		return observers.size();
+	}
 
 	public synchronized void notifyThem(NotificationMethod<T> method) {
+		
+//		(new Exception("NotifyThem")).printStackTrace();
+		
 		try {
 
 			if (singleThreadPool.isShutdown()) {

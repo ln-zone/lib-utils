@@ -19,24 +19,26 @@ public class ExceptionsToLogsConverters implements AutoCloseable {
 
 			@Override
 			public void action() {
-				review();
+				StoredException ex = findToConvert();
+				if (ex != null && ExceptionManager.getInstance().contains(ex.getId())) {
+					exceptionToLog(ex);
+				}
 			}
 
 		};
 	}
 
-	public synchronized void review() {
+	private synchronized StoredException findToConvert() {
 		long currentTime = System.currentTimeMillis();
 		Iterator<StoredException> it = propositions.iterator();
 		while (it.hasNext()) {
 			StoredException ex = it.next();
 			if (ex.getTimestamp() + 1000 < currentTime) {
 				it.remove();
-				if (ExceptionManager.getInstance().contains(ex.getId())) {
-					exceptionToLog(ex);
-				}
+				return ex;
 			}
 		}
+		return null;
 	}
 
 	public void exceptionToLog(StoredException storedException) {

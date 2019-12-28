@@ -52,21 +52,23 @@ public class StoredException extends RuntimeException {
 	}
 	
 	public String findReasonMatches(String regex) {
-		Throwable myEx = this.getCause();
+		Throwable myEx = this;
 		while (myEx != null) {
 			if((myEx.getMessage() != null) && (myEx.getMessage().matches(regex))) {
 				return myEx.getMessage();
 			}
+			myEx = myEx.getCause();
 		}
 		return null;
 	}
 	
 	public String findReasonContains(String substr) {
-		Throwable myEx = this.getCause();
+		Throwable myEx = this;
 		while (myEx != null) {
 			if((myEx.getMessage() != null) && (myEx.getMessage().contains(substr))) {
 				return myEx.getMessage();
 			}
+			myEx = myEx.getCause();
 		}
 		return null;
 	}

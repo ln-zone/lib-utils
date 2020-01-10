@@ -160,4 +160,76 @@ public class NotificatorTests extends TestCase {
 
 	}
 
+	public void testStopAll() {
+		{
+			ToNotifyNumber observer = new ToNotifyNumber();
+
+			try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
+
+				notificator.register(observer);
+				notificator.notifyThem((toNotify) -> toNotify.numberGenerated(0));
+
+			}
+
+			Assert.assertEquals(false, observer.wrongOrder);
+			Assert.assertEquals(false, observer.interrupted);
+			Assert.assertEquals(1, observer.lastNum.get());
+		}
+		Notificator.stopAll();
+		{
+			ToNotifyNumber observer = new ToNotifyNumber();
+
+			try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
+
+				notificator.register(observer);
+				notificator.notifyThem((toNotify) -> toNotify.numberGenerated(0));
+			}
+
+			Assert.assertEquals(false, observer.wrongOrder);
+			Assert.assertEquals(false, observer.interrupted);
+			Assert.assertEquals(1, observer.lastNum.get());
+		}
+
+	}
+	
+	public void testStopAllWait() {
+		{
+			ToNotifyNumber observer = new ToNotifyNumber();
+
+			try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
+
+				notificator.register(observer);
+				notificator.notifyThem((toNotify) -> {
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}); 
+				System.out.println("Notified");
+			}
+
+			System.out.println("Teraz1");
+			Assert.assertEquals(false, observer.wrongOrder);
+			Assert.assertEquals(false, observer.interrupted);
+		}
+		System.out.println("Teraz");
+//		Notificator.stopAll();
+		{
+			ToNotifyNumber observer = new ToNotifyNumber();
+
+			try (Notificator<ToNotifyNumber> notificator = new Notificator<ToNotifyNumber>()) {
+
+				notificator.register(observer);
+				notificator.notifyThem((toNotify) -> toNotify.numberGenerated(0));
+			}
+
+			Assert.assertEquals(false, observer.wrongOrder);
+			Assert.assertEquals(false, observer.interrupted);
+			Assert.assertEquals(1, observer.lastNum.get());
+		}
+
+	}
+
 }

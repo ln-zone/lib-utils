@@ -18,12 +18,12 @@ public class Notificator<T extends Object> implements AutoCloseable {
 
 	private static List<Notificator<?>> allNotif = new LinkedList<Notificator<?>>();
 
-//	public static void stopAll() {
-//		for(Notificator<?> n : allNotif) {
-//			n.close();
-//		}
-//		allNotif.clear();
-//	}
+	public static void stopAll() {
+		for(Notificator<?> n : allNotif) {
+			n.close();
+		}
+		allNotif.clear();
+	}
 
 	public Notificator() {
 		allNotif.add(this);

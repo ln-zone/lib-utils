@@ -58,6 +58,10 @@ public class Log {
 		return this;
 	}
 
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
 	public FormattedTime getTime() {
 		return time;
 	}

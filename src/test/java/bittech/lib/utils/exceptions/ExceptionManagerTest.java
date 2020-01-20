@@ -40,7 +40,7 @@ public class ExceptionManagerTest extends TestCase {
 
 	@Override
 	public void tearDown() {
-		Logs.getInstance().clear();
+		Logs.resetInstance();
 		ExceptionManager.getInstance().reset();
 	}
 

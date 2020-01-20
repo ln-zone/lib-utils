@@ -14,7 +14,7 @@ public class LogTests extends TestCase {
 
 	@Override
 	public void setUp() {
-		Logs.getInstance().clear();
+		Logs.resetInstance();
 	}
 
 	public void testBasicLog() throws InterruptedException {

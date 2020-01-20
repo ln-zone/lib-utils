@@ -19,16 +19,20 @@ import bittech.lib.utils.Notificator;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 
-public class Logs {
+public class Logs implements AutoCloseable {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Logs.class);
 
-	static final Logs instance = new Logs();
+	static Logs instance = new Logs();
 
 	final boolean printLogs;
 
 	public static synchronized Logs getInstance() {
 		return instance;
+	}
+	
+	public static synchronized void resetInstance() {
+		instance = new Logs();
 	}
 
 	private long logLifeTimeMillisec = 60 * 60 * 1000;
@@ -144,10 +148,6 @@ public class Logs {
 		return list.size();
 	}
 
-	public synchronized void clear() {
-		list.clear();
-	}
-
 	public synchronized void markInspected(long timeMilisec) {
 		for (Log log : list) {
 			if (log.timeMillsec == timeMilisec) {
@@ -164,6 +164,12 @@ public class Logs {
 
 		Logs.getInstance().markInspected(1234);
 
+	}
+
+	@Override
+	public void close() throws Exception {
+		notificator.close();
+		notificatorForMark.close();
 	}
 
 }

@@ -35,5 +35,9 @@ public class Utils {
 	public static void prn(Object obj) {
 		System.out.println(JsonBuilder.build().toJson(obj));
 	}
+	
+	public static void prn(String title, Object obj) {
+		System.out.println(title + ": " + JsonBuilder.build().toJson(obj));
+	}
 
 }

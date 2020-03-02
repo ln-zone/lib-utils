@@ -79,6 +79,11 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>bittech</groupId>
+			<artifactId>lib-utils</artifactId>
+			<version>0.1</version>
+		</dependency>
 
 	</dependencies>
 

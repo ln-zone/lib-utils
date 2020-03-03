@@ -31,6 +31,10 @@ public class OutputToFileWriter {
 
 	private synchronized static void saveLinesToFile() {
 		try {
+			File directory = new File("testLogs");
+			if(!directory.exists()) {
+				directory.mkdir();
+			}
 			FileWriter fileWriter = new FileWriter(new File("testLogs/" + name + ".txt"), false);
 			for (String line : lines) {
 				fileWriter.write(line);

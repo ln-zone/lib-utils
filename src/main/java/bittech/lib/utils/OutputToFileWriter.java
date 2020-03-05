@@ -31,6 +31,10 @@ public class OutputToFileWriter {
 
 	private synchronized static void saveLinesToFile() {
 		try {
+			if(name == null) {
+				throw new Exception("Cannot save test output to file. Please call 'OutputToFileWriter.autoconfigName()' at the beginning of test method");
+			}
+			
 			File directory = new File("testLogs");
 			if(!directory.exists()) {
 				directory.mkdir();

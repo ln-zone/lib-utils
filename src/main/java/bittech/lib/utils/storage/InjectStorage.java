@@ -21,11 +21,15 @@ public class InjectStorage implements Storage {
 
 	@Override
 	public synchronized <T> T load(String id, Class<T> classOfT) {
-		RawJson ret = storedObjects.get(id);
-		if (ret == null) {
-			throw new StoredException("No data stored for id: " + id, null);
+		try {
+			RawJson ret = storedObjects.get(id);
+			if (ret == null) {
+				throw new StoredException("No data stored for id: " + id, null);
+			}
+			return ret.fromJson(classOfT);
+		} catch (Exception ex) {
+			throw new StoredException("Failed to load file '" + id + "' from Inject storage", ex);
 		}
-		return ret.fromJson(classOfT);
 	}
 
 }

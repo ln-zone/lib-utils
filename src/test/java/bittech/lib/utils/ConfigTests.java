@@ -2,8 +2,6 @@ package bittech.lib.utils;
 
 import org.junit.Assert;
 
-import bittech.lib.utils.Config;
-import bittech.lib.utils.UtilsException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

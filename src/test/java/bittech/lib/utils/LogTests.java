@@ -1,14 +1,16 @@
 package bittech.lib.utils;
 
-import bittech.lib.utils.logs.Log;
-import bittech.lib.utils.logs.Logs;
-import junit.framework.TestCase;
-import org.junit.Assert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.Assert;
+
+import bittech.lib.utils.logs.Log;
+import bittech.lib.utils.logs.Logs;
+import junit.framework.TestCase;
 
 public class LogTests extends TestCase {
 

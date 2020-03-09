@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 
 import org.junit.Assert;
 
-import bittech.lib.utils.Btc;
-import bittech.lib.utils.UtilsException;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

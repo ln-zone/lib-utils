@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 
 import bittech.lib.utils.Btc;
 import bittech.lib.utils.UtilsException;
-import bittech.lib.utils.json.JsonBuilder;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

@@ -6,9 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import bittech.lib.utils.UtilsException;
-import bittech.lib.utils.json.JsonBuilder;
-import bittech.lib.utils.json.RawJson;
-import bittech.lib.utils.json.RawJsonAdapter;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

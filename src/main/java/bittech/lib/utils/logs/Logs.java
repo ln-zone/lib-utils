@@ -30,7 +30,7 @@ public class Logs implements AutoCloseable {
 	public static synchronized Logs getInstance() {
 		return instance;
 	}
-	
+
 	public static synchronized void resetInstance() {
 		instance = new Logs();
 	}

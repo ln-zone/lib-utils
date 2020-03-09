@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.junit.Assert;
 
-import bittech.lib.utils.Crypto;
-import bittech.lib.utils.RsaKeys;
 import bittech.lib.utils.exceptions.StoredException;
 import junit.framework.Test;
 import junit.framework.TestCase;

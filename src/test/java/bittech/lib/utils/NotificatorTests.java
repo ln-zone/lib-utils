@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Assert;
 
-import bittech.lib.utils.Notificator;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -191,7 +190,7 @@ public class NotificatorTests extends TestCase {
 		}
 
 	}
-	
+
 	public void testStopAllWait() {
 		{
 			ToNotifyNumber observer = new ToNotifyNumber();
@@ -206,7 +205,7 @@ public class NotificatorTests extends TestCase {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}); 
+				});
 				System.out.println("Notified");
 			}
 

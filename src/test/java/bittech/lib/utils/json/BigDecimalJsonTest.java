@@ -56,7 +56,9 @@ public class BigDecimalJsonTest extends TestCase {
 		Assert.assertEquals("1.01", fromJson("{\"value\":1.01}").toPlainString());
 		Assert.assertEquals(null, fromJson("{\"value\":null}"));
 		Assert.assertEquals("0", fromJson("{\"value\":0}").toPlainString());
-		Assert.assertEquals("0.00000000000001", fromJson("{\"value\":0.00000000000001}").toPlainString()); // TODO: Dlaczego to zero?
+		Assert.assertEquals("0.00000000000001", fromJson("{\"value\":0.00000000000001}").toPlainString()); // TODO:
+																											// Dlaczego
+																											// to zero?
 		Assert.assertEquals("1000000000000", fromJson("{\"value\":1000000000000}").toPlainString());
 	}
 

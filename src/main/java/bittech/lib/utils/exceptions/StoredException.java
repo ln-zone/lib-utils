@@ -50,22 +50,22 @@ public class StoredException extends RuntimeException {
 		}
 		return reasons;
 	}
-	
+
 	public String findReasonMatches(String regex) {
 		Throwable myEx = this;
 		while (myEx != null) {
-			if((myEx.getMessage() != null) && (myEx.getMessage().matches(regex))) {
+			if ((myEx.getMessage() != null) && (myEx.getMessage().matches(regex))) {
 				return myEx.getMessage();
 			}
 			myEx = myEx.getCause();
 		}
 		return null;
 	}
-	
+
 	public String findReasonContains(String substr) {
 		Throwable myEx = this;
 		while (myEx != null) {
-			if((myEx.getMessage() != null) && (myEx.getMessage().contains(substr))) {
+			if ((myEx.getMessage() != null) && (myEx.getMessage().contains(substr))) {
 				return myEx.getMessage();
 			}
 			myEx = myEx.getCause();

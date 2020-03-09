@@ -69,7 +69,7 @@ public class Log {
 	public void setTimeMilisec(long timeMillsec) {
 		this.timeMillsec = timeMillsec;
 	}
-	
+
 	public long getTimeMillsec() {
 		return timeMillsec;
 	}

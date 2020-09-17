@@ -18,7 +18,7 @@ public class AsymetricDecryption {
 	private static final String ASYM_ALGO = "RSA";
 	private static final String SYM_ALGO = "AES";
 
-	public static byte[] decrypt(AdvancedEcryptedData data, List<BigInteger> prvKeys) {
+	public static byte[] decrypt(AdvancedEncryptedData data, List<BigInteger> prvKeys) {
 
 		List<BigInteger> symKeys = decyptKeys(data.keys, prvKeys);
 		Utils.prnList(symKeys);
@@ -31,7 +31,7 @@ public class AsymetricDecryption {
 		return toDecrypt;
 	}
 
-	public static List<BigInteger> decyptKeys(List<String> encryptedKeys, List<BigInteger> prvKeys) {
+	private static List<BigInteger> decyptKeys(List<String> encryptedKeys, List<BigInteger> prvKeys) {
 		List<BigInteger> ret = new ArrayList<>(encryptedKeys.size());
 		int pos = 0;
 		for (BigInteger key : prvKeys) {
@@ -43,7 +43,7 @@ public class AsymetricDecryption {
 		return ret;
 	}
 
-	public static byte[] decryptAsym(byte[] data, BigInteger prvKey) {
+	private static byte[] decryptAsym(byte[] data, BigInteger prvKey) {
 		try {
 			PrivateKey prv = bigIntToPrivate(prvKey);
 			Cipher cipher = Cipher.getInstance(ASYM_ALGO);
@@ -62,7 +62,7 @@ public class AsymetricDecryption {
 		return kf.generatePrivate(spec);
 	}
 
-	public static byte[] decryptSym(byte[] data, BigInteger key) {
+	private static byte[] decryptSym(byte[] data, BigInteger key) {
 		try {
 			Cipher c = Cipher.getInstance(SYM_ALGO);
 			SecretKeySpec k = new SecretKeySpec(key.toByteArray(), SYM_ALGO);

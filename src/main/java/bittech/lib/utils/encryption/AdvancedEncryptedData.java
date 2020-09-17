@@ -4,12 +4,12 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdvancedEcryptedData {
+public class AdvancedEncryptedData {
 
 	String data;
 	List<String> keys;
 
-	public AdvancedEcryptedData(byte[] data, List<byte[]> keys) {
+	public AdvancedEncryptedData(byte[] data, List<byte[]> keys) {
 		this.data = new BigInteger(data).toString(16);
 		this.keys = new ArrayList<String>(keys.size());
 		for(byte[] encKey : keys) {

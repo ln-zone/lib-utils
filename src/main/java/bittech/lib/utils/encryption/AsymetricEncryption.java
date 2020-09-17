@@ -17,18 +17,18 @@ public class AsymetricEncryption {
 	private static final String ASYM_ALGO = "RSA";
 	private static final String SYM_ALGO = "AES";
 
-	public static AdvancedEcryptedData encrypt(byte[] data, List<BigInteger> pubKeys) {
+	public static AdvancedEncryptedData encrypt(byte[] data, List<BigInteger> pubKeys) {
 		try {
 			List<BigInteger> symetricKeys = SymKeys.generate(pubKeys.size());
 			byte[] ecnryptedData = encryptSymetric(data, symetricKeys);
 			List<byte[]> encryptedKeys = encryptKeys(symetricKeys, pubKeys);
-			return new AdvancedEcryptedData(ecnryptedData, encryptedKeys);
+			return new AdvancedEncryptedData(ecnryptedData, encryptedKeys);
 		} catch (Exception ex) {
 			throw new StoredException("Failed to encrypt data", ex);
 		}
 	}
 
-	public static byte[] encryptSym(byte[] data, BigInteger key) throws Exception {
+	private static byte[] encryptSym(byte[] data, BigInteger key) throws Exception {
 		Cipher c = Cipher.getInstance(SYM_ALGO);
 		SecretKeySpec k = new SecretKeySpec(key.toByteArray(), SYM_ALGO);
 		c.init(Cipher.ENCRYPT_MODE, k);
@@ -49,7 +49,7 @@ public class AsymetricEncryption {
 		}
 	}
 
-	public static byte[] encryptWithPub(byte[] data, BigInteger pubKey) {
+	private static byte[] encryptWithPub(byte[] data, BigInteger pubKey) {
 		try {
 			Cipher cipher = Cipher.getInstance(ASYM_ALGO);
 			X509EncodedKeySpec spec = new X509EncodedKeySpec(pubKey.toByteArray());

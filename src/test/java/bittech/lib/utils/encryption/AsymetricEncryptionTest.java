@@ -13,7 +13,7 @@ public class AsymetricEncryptionTest extends TestCase {
 		List<AsymKeyPair> asymKeys = AsymKeys.generate(3);
 
 		byte[] data = new byte[] { -4 };
-		AdvancedEcryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
+		AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
 		byte[] decrypted = AsymetricDecryption.decrypt(encrypted, AsymKeys.getPrvKeys(asymKeys));
 		Assert.assertArrayEquals(data, decrypted);
 	}
@@ -26,7 +26,7 @@ public class AsymetricEncryptionTest extends TestCase {
 		for (int i = 0; i < data.length; i++) {
 			data[i] = (byte) ((Math.random() * 2 * Byte.MAX_VALUE) - Byte.MAX_VALUE);
 		}
-		AdvancedEcryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
+		AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
 		byte[] decrypted = AsymetricDecryption.decrypt(encrypted, AsymKeys.getPrvKeys(asymKeys));
 		Assert.assertArrayEquals(data, decrypted);
 	}

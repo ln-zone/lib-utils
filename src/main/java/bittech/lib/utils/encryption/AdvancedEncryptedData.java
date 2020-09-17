@@ -6,16 +6,23 @@ import java.util.List;
 
 public class AdvancedEncryptedData {
 
-	String data;
-	List<String> keys;
+	private final String data;
+	private final List<String> keys;
 
 	public AdvancedEncryptedData(byte[] data, List<byte[]> keys) {
 		this.data = new BigInteger(data).toString(16);
 		this.keys = new ArrayList<String>(keys.size());
-		for(byte[] encKey : keys) {
+		for (byte[] encKey : keys) {
 			this.keys.add(new BigInteger(encKey).toString(16));
 		}
+	}
 
+	public String getData() {
+		return data;
+	}
+
+	public List<String> getKeys() {
+		return keys;
 	}
 
 }

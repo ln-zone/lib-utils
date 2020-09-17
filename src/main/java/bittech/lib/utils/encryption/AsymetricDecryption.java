@@ -20,15 +20,35 @@ public class AsymetricDecryption {
 
 	public static byte[] decrypt(AdvancedEncryptedData data, List<BigInteger> prvKeys) {
 
-		List<BigInteger> symKeys = decyptKeys(data.keys, prvKeys);
+		List<BigInteger> symKeys = decyptKeys(data.getKeys(), prvKeys);
 		Utils.prnList(symKeys);
 
-		byte[] toDecrypt = new BigInteger(data.data, 16).toByteArray();
+		byte[] toDecrypt = new BigInteger(data.getData(), 16).toByteArray();
 		for (BigInteger symKey : symKeys) {
 			toDecrypt = decryptSym(toDecrypt, symKey);
 		}
 
 		return toDecrypt;
+	}
+	
+	public static AdvancedEncryptedData decryptSingleLevel(AdvancedEncryptedData data, BigInteger prvKey) {
+		if(data.getKeys().size() == 0) {
+			throw new StoredException("Data is already encrypted", null);
+		}
+		BigInteger encryptedKey = new BigInteger(data.getKeys().get(0), 16);
+		BigInteger decryptedKey = new BigInteger(decryptAsym(encryptedKey.toByteArray(), prvKey));
+		
+		byte[] encryptedData = new BigInteger(data.getData(), 16).toByteArray();
+		byte[] decryptedData = decryptSym(encryptedData, decryptedKey);
+		
+		List<byte[]> keys = new ArrayList<>();
+		if(data.getKeys().size() > 1) {
+			for(int i=1; i<data.getKeys().size(); i++) {
+				keys.add(new BigInteger(data.getKeys().get(i), 16).toByteArray());
+			}
+		}
+		
+		return new AdvancedEncryptedData(decryptedData, keys);
 	}
 
 	private static List<BigInteger> decyptKeys(List<String> encryptedKeys, List<BigInteger> prvKeys) {

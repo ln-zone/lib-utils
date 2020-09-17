@@ -1,5 +1,7 @@
 package bittech.lib.utils;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -34,6 +36,14 @@ public class Utils {
 
 	public static void prn(Object obj) {
 		System.out.println(JsonBuilder.build().toJson(obj));
+	}
+	
+	public static void prnList(List<?> list) {
+		int i =0;
+		for(Object obj : list) {
+			System.out.println("" + i + ": " + JsonBuilder.build().toJson(obj));
+			i++;
+		}
 	}
 
 	public static void prn(String title, Object obj) {

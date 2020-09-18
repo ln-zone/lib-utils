@@ -24,5 +24,9 @@ public class AdvancedEncryptedData {
 	public List<String> getKeys() {
 		return keys;
 	}
+	
+	public boolean isFullyDecrypted() {
+		return keys.size() == 0;
+	}
 
 }

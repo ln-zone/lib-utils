@@ -30,17 +30,17 @@ public class AsymKeys {
 		}
 	}
 
-	public static List<BigInteger> getPubKeys(List<AsymKeyPair> asyncKeys) {
-		List<BigInteger> pubKeys = new ArrayList<>(asyncKeys.size());
-		for (AsymKeyPair keys : asyncKeys) {
+	public static List<BigInteger> getPubKeys(List<AsymKeyPair> asymKeys) {
+		List<BigInteger> pubKeys = new ArrayList<>(asymKeys.size());
+		for (AsymKeyPair keys : asymKeys) {
 			pubKeys.add(keys.getPub());
 		}
 		return pubKeys;
 	}
 
-	public static List<BigInteger> getPrvKeys(List<AsymKeyPair> asyncKeys) {
-		List<BigInteger> pubKeys = new ArrayList<>(asyncKeys.size());
-		for (AsymKeyPair keys : asyncKeys) {
+	public static List<BigInteger> getPrvKeys(List<AsymKeyPair> asymKeys) {
+		List<BigInteger> pubKeys = new ArrayList<>(asymKeys.size());
+		for (AsymKeyPair keys : asymKeys) {
 			pubKeys.add(keys.getPrv());
 		}
 		return pubKeys;

@@ -76,7 +76,6 @@ public class AsymetricDecryption {
 
 	private static PrivateKey bigIntToPrivate(BigInteger asBigInt) throws Exception {
 		byte[] keyBytes = asBigInt.toByteArray();
-		System.out.println("Len: " + keyBytes.length);
 		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
 		KeyFactory kf = KeyFactory.getInstance(ASYM_ALGO);
 		return kf.generatePrivate(spec);

@@ -112,6 +112,7 @@ public class Config {
 			c.entries = JsonBuilder.build().fromJson(fileReader, type);
 			return c;
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			throw new StoredException("Cannot open config from file", ex);
 		}
 	}

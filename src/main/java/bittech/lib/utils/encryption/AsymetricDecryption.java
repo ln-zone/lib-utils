@@ -10,7 +10,6 @@ import java.util.List;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-import bittech.lib.utils.Utils;
 import bittech.lib.utils.exceptions.StoredException;
 
 public class AsymetricDecryption {
@@ -20,48 +19,48 @@ public class AsymetricDecryption {
 
 	public static byte[] decrypt(AdvancedEncryptedData data, List<BigInteger> prvKeys) {
 
-		List<BigInteger> symKeys = decyptKeys(data.getKeys(), prvKeys);
-		Utils.prnList(symKeys);
-
-		byte[] toDecrypt = new BigInteger(data.getData(), 16).toByteArray();
-		for (BigInteger symKey : symKeys) {
-			toDecrypt = decryptSym(toDecrypt, symKey);
+		AdvancedEncryptedData decryptedAED = data;
+		for (BigInteger prvKey : prvKeys) {
+			decryptedAED = AsymetricDecryption.decryptSingleLevel(decryptedAED, prvKey);
+			System.out.println("Decrypted: " + decryptedAED.getData());
 		}
 
-		return toDecrypt;
+		byte[] decrypted = new BigInteger(decryptedAED.getData(), 16).toByteArray();
+
+		return decrypted;
 	}
-	
+
 	public static AdvancedEncryptedData decryptSingleLevel(AdvancedEncryptedData data, BigInteger prvKey) {
-		if(data.getKeys().size() == 0) {
-			throw new StoredException("Data is already encrypted", null);
+		if (data.getKeys().size() == 0) {
+			throw new StoredException("Data is already decrypted", null);
 		}
 		BigInteger encryptedKey = new BigInteger(data.getKeys().get(0), 16);
 		BigInteger decryptedKey = new BigInteger(decryptAsym(encryptedKey.toByteArray(), prvKey));
-		
+
 		byte[] encryptedData = new BigInteger(data.getData(), 16).toByteArray();
 		byte[] decryptedData = decryptSym(encryptedData, decryptedKey);
-		
+
 		List<byte[]> keys = new ArrayList<>();
-		if(data.getKeys().size() > 1) {
-			for(int i=1; i<data.getKeys().size(); i++) {
+		if (data.getKeys().size() > 1) {
+			for (int i = 1; i < data.getKeys().size(); i++) {
 				keys.add(new BigInteger(data.getKeys().get(i), 16).toByteArray());
 			}
 		}
-		
+
 		return new AdvancedEncryptedData(decryptedData, keys);
 	}
 
-	private static List<BigInteger> decyptKeys(List<String> encryptedKeys, List<BigInteger> prvKeys) {
-		List<BigInteger> ret = new ArrayList<>(encryptedKeys.size());
-		int pos = 0;
-		for (BigInteger key : prvKeys) {
-			BigInteger encryptedKey = new BigInteger(encryptedKeys.get(pos), 16);
-			byte[] decryptedKey = decryptAsym(encryptedKey.toByteArray(), key);
-			ret.add(new BigInteger(decryptedKey));
-			pos++;
-		}
-		return ret;
-	}
+//	private static List<BigInteger> decyptKeys(List<String> encryptedKeys, List<BigInteger> prvKeys) {
+//		List<BigInteger> ret = new ArrayList<>(encryptedKeys.size());
+//		int pos = 0;
+//		for (BigInteger key : prvKeys) {
+//			BigInteger encryptedKey = new BigInteger(encryptedKeys.get(pos), 16);
+//			byte[] decryptedKey = decryptAsym(encryptedKey.toByteArray(), key);
+//			ret.add(new BigInteger(decryptedKey));
+//			pos++;
+//		}
+//		return ret;
+//	}
 
 	private static byte[] decryptAsym(byte[] data, BigInteger prvKey) {
 		try {

@@ -11,6 +11,7 @@ public class AdvancedEncryptedData {
 
 	public AdvancedEncryptedData(byte[] data, List<byte[]> keys) {
 		this.data = new BigInteger(data).toString(16);
+		System.out.println("Decrypted data: " + this.data);
 		this.keys = new ArrayList<String>(keys.size());
 		for (byte[] encKey : keys) {
 			this.keys.add(new BigInteger(encKey).toString(16));
@@ -20,7 +21,7 @@ public class AdvancedEncryptedData {
 	public String getData() {
 		return data;
 	}
-
+	
 	public List<String> getKeys() {
 		return keys;
 	}

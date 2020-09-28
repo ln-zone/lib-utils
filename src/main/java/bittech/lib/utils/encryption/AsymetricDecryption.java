@@ -50,18 +50,6 @@ public class AsymetricDecryption {
 		return new AdvancedEncryptedData(decryptedData, keys);
 	}
 
-//	private static List<BigInteger> decyptKeys(List<String> encryptedKeys, List<BigInteger> prvKeys) {
-//		List<BigInteger> ret = new ArrayList<>(encryptedKeys.size());
-//		int pos = 0;
-//		for (BigInteger key : prvKeys) {
-//			BigInteger encryptedKey = new BigInteger(encryptedKeys.get(pos), 16);
-//			byte[] decryptedKey = decryptAsym(encryptedKey.toByteArray(), key);
-//			ret.add(new BigInteger(decryptedKey));
-//			pos++;
-//		}
-//		return ret;
-//	}
-
 	private static byte[] decryptAsym(byte[] data, BigInteger prvKey) {
 		try {
 			PrivateKey prv = bigIntToPrivate(prvKey);

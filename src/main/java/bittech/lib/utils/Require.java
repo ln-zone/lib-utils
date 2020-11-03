@@ -20,6 +20,13 @@ public class Require {
 		}
 		throw new StoredException("\"" + name + "\" must be value between " + valFrom + " and " + valTo, null);
 	}
+	
+	public static float inRange(float value, float valFrom, float valTo, String name) {
+		if ((value >= valFrom) && (value <= valTo)) {
+			return value;
+		}
+		throw new StoredException("\"" + name + "\" must be value between " + valFrom + " and " + valTo, null);
+	}
 
 	public static long inRange(long value, long valFrom, long valTo, String name) {
 		if ((value >= valFrom) && (value <= valTo)) {

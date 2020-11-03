@@ -13,7 +13,7 @@ public class BigDecimalAdapter extends TypeAdapter<BigDecimal> {
 	@Override
 	public void write(final JsonWriter out, final BigDecimal value) throws IOException {
 		if (value != null) {
-			out.jsonValue("" + value.stripTrailingZeros().toPlainString());
+			out.value(value.stripTrailingZeros().toPlainString());
 		} else {
 			out.jsonValue(null);
 		}
@@ -25,7 +25,7 @@ public class BigDecimalAdapter extends TypeAdapter<BigDecimal> {
 			in.nextNull();
 			return null;
 		} else {
-			String str = "" + in.nextDouble();
+			String str = in.nextString();
 			return new BigDecimal(str).stripTrailingZeros();
 		}
 	}

@@ -75,7 +75,7 @@ public class LoopThreadTests extends TestCase {
 			public void action() {
 				try {
 					while (true) {
-						System.out.println("Dupa");
+						System.out.println("Loop test");
 					}
 				} catch (Exception ex) {
 

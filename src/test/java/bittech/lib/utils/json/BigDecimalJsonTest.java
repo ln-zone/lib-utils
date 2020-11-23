@@ -45,11 +45,11 @@ public class BigDecimalJsonTest extends TestCase {
 	}
 
 	public void testToJson() throws UtilsException {
-		Assert.assertEquals("{\"value\":1.01}", toJson(new BigDecimal("1.01")));
+		Assert.assertEquals("{\"value\":\"1.01\"}", toJson(new BigDecimal("1.01")));
 		Assert.assertEquals("{\"value\":null}", toJson(null));
-		Assert.assertEquals("{\"value\":0}", toJson(new BigDecimal("0")));
-		Assert.assertEquals("{\"value\":0.00000000000001}", toJson(new BigDecimal("0.00000000000001")));
-		Assert.assertEquals("{\"value\":1000000000000}", toJson(new BigDecimal("1000000000000")));
+		Assert.assertEquals("{\"value\":\"0\"}", toJson(new BigDecimal("0")));
+		Assert.assertEquals("{\"value\":\"0.00000000000001\"}", toJson(new BigDecimal("0.00000000000001")));
+		Assert.assertEquals("{\"value\":\"1000000000000\"}", toJson(new BigDecimal("1000000000000")));
 	}
 
 	public void testFromJson() throws UtilsException {

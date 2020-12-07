@@ -27,6 +27,7 @@ public class LogTests extends TestCase {
 			System.out.println(log.getEvent());
 
 		});
+
 		Log log = new Log();
 		log.param("name", 200);
 		log.event("I'm log");

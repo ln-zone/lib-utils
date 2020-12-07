@@ -1,11 +1,15 @@
 package bittech.lib.utils;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
 
+import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 
 public class Utils {
@@ -37,10 +41,10 @@ public class Utils {
 	public static void prn(Object obj) {
 		System.out.println(JsonBuilder.build().toJson(obj));
 	}
-	
+
 	public static void prnList(List<?> list) {
-		int i =0;
-		for(Object obj : list) {
+		int i = 0;
+		for (Object obj : list) {
 			System.out.println("" + i + ": " + JsonBuilder.build().toJson(obj));
 			i++;
 		}
@@ -48,6 +52,16 @@ public class Utils {
 
 	public static void prn(String title, Object obj) {
 		System.out.println(title + ": " + JsonBuilder.build().toJson(obj));
+	}
+
+	public static void delFileIfExists(String fileName) {
+		try {
+			if (new File(fileName).exists()) {
+				Files.delete(Path.of(fileName));
+			}
+		} catch (Exception ex) {
+			throw new StoredException("Failed on tryintg to delete file", ex);
+		}
 	}
 
 }

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import bittech.lib.utils.Btc;
+import bittech.lib.utils.Bytes;
 import bittech.lib.utils.FormattedTime;
 
 public class JsonBuilder {
@@ -17,6 +18,7 @@ public class JsonBuilder {
 	public static final Gson build() {
 		return (new GsonBuilder()).registerTypeAdapter(RawJson.class, new RawJsonAdapter())
 				.registerTypeAdapter(Btc.class, new BtcAdapter())
+				.registerTypeAdapter(Bytes.class, new BytesAdapter())
 				.registerTypeAdapter(BigDecimal.class, new BigDecimalAdapter())
 				.registerTypeAdapter(FormattedTime.class, new FormattedTimeAdapter()).serializeNulls().create();
 	}

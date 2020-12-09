@@ -1,31 +1,31 @@
 package bittech.lib.utils.encryption;
 
-import java.math.BigInteger;
 import java.security.KeyPair;
 
+import bittech.lib.utils.Bytes;
 import bittech.lib.utils.Require;
 
 public class AsymKeyPair {
 
-	private final BigInteger prv;
-	private final BigInteger pub;
+	private final Bytes prv;
+	private final Bytes pub;
 
 	public AsymKeyPair(KeyPair pair) {
 		Require.notNull(pair, "key pair");
-		this.prv = new BigInteger(pair.getPrivate().getEncoded());
-		this.pub = new BigInteger(pair.getPublic().getEncoded());
+		this.prv = Bytes.fromArray(pair.getPrivate().getEncoded());
+		this.pub = Bytes.fromArray(pair.getPublic().getEncoded());
 	}
-	
-	public AsymKeyPair(final BigInteger prv, final BigInteger pub) {
+
+	public AsymKeyPair(final Bytes prv, final Bytes pub) {
 		this.prv = Require.notNull(prv, "prv");
 		this.pub = Require.notNull(pub, "pub");
 	}
 
-	public BigInteger getPrv() {
+	public Bytes getPrv() {
 		return prv;
 	}
 
-	public BigInteger getPub() {
+	public Bytes getPub() {
 		return pub;
 	}
 

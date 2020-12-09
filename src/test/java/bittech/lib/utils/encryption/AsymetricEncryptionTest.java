@@ -24,7 +24,10 @@ public class AsymetricEncryptionTest extends TestCase {
 	public void testBigData() {
 
 		List<AsymKeyPair> asymKeys = AsymKeys.generate(3);
-
+		
+		System.out.println("PUB: " + asymKeys.get(0).getPub().asBase64());
+		System.out.println("PRV: " + asymKeys.get(0).getPrv().asBase64());
+		
 		byte[] data = new byte[10000];
 		for (int i = 0; i < data.length; i++) {
 			data[i] = (byte) ((Math.random() * 2 * Byte.MAX_VALUE) - Byte.MAX_VALUE);
@@ -49,7 +52,7 @@ public class AsymetricEncryptionTest extends TestCase {
 			decryptedAED = AsymetricDecryption.decryptSingleLevel(decryptedAED, asymKeys.get(i).getPrv());
 		}
 
-		byte[] decrypted = new BigInteger(decryptedAED.getData(), 16).toByteArray();
+		byte[] decrypted = decryptedAED.getData().asByteArray();
 		Assert.assertArrayEquals(data, decrypted);
 	}
 
@@ -64,6 +67,25 @@ public class AsymetricEncryptionTest extends TestCase {
 		byte[] bytes = encrypted.toByteArray();
 		AdvancedEncryptedData encrypted2 = AdvancedEncryptedData.fromByteArray(bytes);
 		Assert.assertTrue(Utils.deepEquals(encrypted, encrypted2));
+	}
+
+	public void testNoKeys() {
+		byte[] data = { 1, 5, 8, 123, -76 };
+
+		List<byte[]> keys = new ArrayList<byte[]>();
+
+		AdvancedEncryptedData encrypted = new AdvancedEncryptedData(data, keys);
+		byte[] bytes = encrypted.toByteArray();
+		AdvancedEncryptedData encrypted2 = AdvancedEncryptedData.fromByteArray(bytes);
+		Assert.assertTrue(Utils.deepEquals(encrypted, encrypted2));
+	}
+
+	public void testBigInteger() {
+		byte[] bytes = new byte[] { 0, 1, 2, 3 };
+		BigInteger bigInt = new BigInteger(bytes);
+		System.out.println(bigInt.toString(16));
+		byte[] retBytes = bigInt.toByteArray();
+		Utils.prn(retBytes);
 	}
 
 }

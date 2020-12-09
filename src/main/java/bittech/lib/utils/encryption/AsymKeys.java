@@ -1,11 +1,11 @@
 package bittech.lib.utils.encryption;
 
-import java.math.BigInteger;
 import java.security.KeyPairGenerator;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+import bittech.lib.utils.Bytes;
 import bittech.lib.utils.exceptions.StoredException;
 
 public class AsymKeys {
@@ -30,16 +30,16 @@ public class AsymKeys {
 		}
 	}
 
-	public static List<BigInteger> getPubKeys(List<AsymKeyPair> asymKeys) {
-		List<BigInteger> pubKeys = new ArrayList<>(asymKeys.size());
+	public static List<Bytes> getPubKeys(List<AsymKeyPair> asymKeys) {
+		List<Bytes> pubKeys = new ArrayList<>(asymKeys.size());
 		for (AsymKeyPair keys : asymKeys) {
 			pubKeys.add(keys.getPub());
 		}
 		return pubKeys;
 	}
 
-	public static List<BigInteger> getPrvKeys(List<AsymKeyPair> asymKeys) {
-		List<BigInteger> pubKeys = new ArrayList<>(asymKeys.size());
+	public static List<Bytes> getPrvKeys(List<AsymKeyPair> asymKeys) {
+		List<Bytes> pubKeys = new ArrayList<>(asymKeys.size());
 		for (AsymKeyPair keys : asymKeys) {
 			pubKeys.add(keys.getPrv());
 		}

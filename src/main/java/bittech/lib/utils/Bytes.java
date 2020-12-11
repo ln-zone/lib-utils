@@ -43,7 +43,8 @@ public class Bytes {
 
 	public String asHex() {
 		try {
-			return new String(Hex.encodeHex(byteArray));
+			String toRet = new String(Hex.encodeHex(byteArray));
+			return toRet;
 		} catch (Exception ex) {
 			throw new StoredException("Failed to cretae Hex from Bytes", ex);
 		}

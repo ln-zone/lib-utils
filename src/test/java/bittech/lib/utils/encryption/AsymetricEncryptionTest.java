@@ -24,10 +24,10 @@ public class AsymetricEncryptionTest extends TestCase {
 	public void testBigData() {
 
 		List<AsymKeyPair> asymKeys = AsymKeys.generate(3);
-		
+
 		System.out.println("PUB: " + asymKeys.get(0).getPub().asBase64());
 		System.out.println("PRV: " + asymKeys.get(0).getPrv().asBase64());
-		
+
 		byte[] data = new byte[10000];
 		for (int i = 0; i < data.length; i++) {
 			data[i] = (byte) ((Math.random() * 2 * Byte.MAX_VALUE) - Byte.MAX_VALUE);
@@ -87,5 +87,56 @@ public class AsymetricEncryptionTest extends TestCase {
 		byte[] retBytes = bigInt.toByteArray();
 		Utils.prn(retBytes);
 	}
+
+	public void testMasive1() {
+		List<AsymKeyPair> asymKeys = AsymKeys.generate(1);
+		
+		for (int i = 0; i < 1000; i++) {
+			byte[] data = randBytes();
+
+			AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
+
+			byte[] decrypted = AsymetricDecryption.decrypt(encrypted, AsymKeys.getPrvKeys(asymKeys));
+
+			Assert.assertArrayEquals(data, decrypted);
+		}
+	}
+	
+	public void testMasive2() {
+		List<AsymKeyPair> asymKeys = AsymKeys.generate(2);
+		
+		for (int i = 0; i < 1000; i++) {
+			byte[] data = randBytes();
+
+			AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
+
+			byte[] decrypted = AsymetricDecryption.decrypt(encrypted, AsymKeys.getPrvKeys(asymKeys));
+
+			Assert.assertArrayEquals(data, decrypted);
+		}
+	}
+	
+	public void testMasive3() {
+		List<AsymKeyPair> asymKeys = AsymKeys.generate(3);
+		
+		for (int i = 0; i < 1000; i++) {
+			byte[] data = randBytes();
+
+			AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
+
+			byte[] decrypted = AsymetricDecryption.decrypt(encrypted, AsymKeys.getPrvKeys(asymKeys));
+
+			Assert.assertArrayEquals(data, decrypted);
+		}
+	}
+
+	private byte[] randBytes() {
+		int len = (int) (Math.random() * 100);
+		byte[] newBytes = new byte[len];
+		for (int i = 0; i < newBytes.length; i++) {
+			newBytes[i] = (byte) ((Math.random() * 250) - 127);
+		}
+		return newBytes;
+	};
 
 }

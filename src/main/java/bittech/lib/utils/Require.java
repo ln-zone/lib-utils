@@ -41,5 +41,13 @@ public class Require {
 		}
 		throw new StoredException("\"" + name + "\" cannot be empty string", null);
 	}
+	
+	public static String equals(String value, String expected, String name) {
+		Require.notEmpty(value, name);
+		if(value.equals(expected)) {
+			return value;
+		}
+		throw new StoredException("\"" + name + "\" have to be " +  expected + " but it is " + value, null);
+	}
 
 }

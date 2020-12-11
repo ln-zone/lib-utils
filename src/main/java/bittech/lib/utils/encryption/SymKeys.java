@@ -20,7 +20,7 @@ public class SymKeys {
 		List<Bytes> symetricKeys = new ArrayList<>();
 		for (int i = 0; i < count; i++) {
 			SecretKey sc = keyGen.generateKey();
-			Utils.prn(sc.getEncoded());
+//			Utils.prn(sc.getEncoded());
 //			System.out.println("Secret key: " + new BigInteger(sc.getEncoded()).toString(16));
 			symetricKeys.add(Bytes.fromArray(sc.getEncoded()));
 		}

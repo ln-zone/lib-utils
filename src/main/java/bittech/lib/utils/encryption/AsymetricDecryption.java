@@ -22,7 +22,7 @@ public class AsymetricDecryption {
 		AdvancedEncryptedData decryptedAED = data;
 		for (Bytes prvKey : prvKeys) {
 			decryptedAED = AsymetricDecryption.decryptSingleLevel(decryptedAED, prvKey);
-			System.out.println("Decrypted: " + decryptedAED.getData());
+//			System.out.println("Decrypted: " + decryptedAED.getData());
 		}
 
 		byte[] decrypted = decryptedAED.getData().asByteArray();

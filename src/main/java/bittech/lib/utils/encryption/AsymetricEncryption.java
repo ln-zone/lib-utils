@@ -37,10 +37,10 @@ public class AsymetricEncryption {
 			SecretKeySpec k = new SecretKeySpec(key.asByteArray(), SYM_ALGO);
 			c.init(Cipher.ENCRYPT_MODE, k);
 			byte[] encryptedData = c.doFinal(data);
-			System.out.println(encryptedData.length);
+//			System.out.println(encryptedData.length);
 			return encryptedData;
 		} catch (Exception ex) {
-			System.out.println("Tutaj");
+//			System.out.println("Tutaj");
 			throw new Exception("Dupa", ex);
 		}
 	}
@@ -77,7 +77,7 @@ public class AsymetricEncryption {
 			for (int i = 0; i < symKeys.size(); i++) {
 				byte[] toEncrypt = symKeys.get(i).asByteArray();
 				Bytes pubKey = pubKeys.get(i);
-				System.out.println("" + i + ": " + pubKey);
+//				System.out.println("" + i + ": " + pubKey);
 				encrypted.add(encryptWithPub(toEncrypt, pubKey));
 			}
 			return encrypted;

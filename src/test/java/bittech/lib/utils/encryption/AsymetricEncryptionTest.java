@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.Assert;
 
 import bittech.lib.utils.Utils;
@@ -92,7 +93,7 @@ public class AsymetricEncryptionTest extends TestCase {
 		List<AsymKeyPair> asymKeys = AsymKeys.generate(1);
 		
 		for (int i = 0; i < 1000; i++) {
-			byte[] data = randBytes();
+			byte[] data = RandomUtils.nextBytes(RandomUtils.nextInt(3, 100));
 
 			AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
 
@@ -106,7 +107,7 @@ public class AsymetricEncryptionTest extends TestCase {
 		List<AsymKeyPair> asymKeys = AsymKeys.generate(2);
 		
 		for (int i = 0; i < 1000; i++) {
-			byte[] data = randBytes();
+			byte[] data = RandomUtils.nextBytes(RandomUtils.nextInt(3, 100));
 
 			AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
 
@@ -120,7 +121,7 @@ public class AsymetricEncryptionTest extends TestCase {
 		List<AsymKeyPair> asymKeys = AsymKeys.generate(3);
 		
 		for (int i = 0; i < 1000; i++) {
-			byte[] data = randBytes();
+			byte[] data = RandomUtils.nextBytes(RandomUtils.nextInt(3, 100));
 
 			AdvancedEncryptedData encrypted = AsymetricEncryption.encrypt(data, AsymKeys.getPubKeys(asymKeys));
 
@@ -129,14 +130,5 @@ public class AsymetricEncryptionTest extends TestCase {
 			Assert.assertArrayEquals(data, decrypted);
 		}
 	}
-
-	private byte[] randBytes() {
-		int len = (int) (Math.random() * 100);
-		byte[] newBytes = new byte[len];
-		for (int i = 0; i < newBytes.length; i++) {
-			newBytes[i] = (byte) ((Math.random() * 250) - 127);
-		}
-		return newBytes;
-	};
 
 }

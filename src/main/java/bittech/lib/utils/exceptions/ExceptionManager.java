@@ -1,6 +1,8 @@
 package bittech.lib.utils.exceptions;
 
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -12,10 +14,14 @@ import bittech.lib.utils.Config;
 public class ExceptionManager {
 
 	private final Logger LOGGER = LoggerFactory.getLogger(ExceptionManager.class);
+	
+	private static int maxSize = 1000;
 
 	private static final ExceptionManager instance = new ExceptionManager();
 
 	private Map<Long, ExceptionInfo> exceptions = new ConcurrentHashMap<Long, ExceptionInfo>();
+	
+	List<Long> lastExceptions = new LinkedList<Long>();
 
 	private final static boolean pushToLogs = Config.getInstance().getEntryOrDefault("pushToLogs", Boolean.class, true);
 
@@ -63,6 +69,12 @@ public class ExceptionManager {
 
 		if (pushToLogs) {
 			exceptionsToLogsConverters.push(exception);
+		}
+		
+		lastExceptions.add(exceptionId);
+		while(lastExceptions.size() > maxSize) {
+			exceptions.remove(lastExceptions.get(0));
+			lastExceptions.remove(0);
 		}
 
 		return exceptionId;

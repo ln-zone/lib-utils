@@ -10,6 +10,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 import bittech.lib.utils.Bytes;
+import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
 
 public class AsymetricDecryption {
@@ -31,6 +32,9 @@ public class AsymetricDecryption {
 	}
 
 	public static AdvancedEncryptedData decryptSingleLevel(AdvancedEncryptedData data, Bytes prvKey) {
+		Require.notNull(data, "data");
+		Require.notNull(data.getKeys(), "data keys");
+		Require.notNull(prvKey, "prvKey");
 		if (data.getKeys().size() == 0) {
 			throw new StoredException("Data is already decrypted", null);
 		}

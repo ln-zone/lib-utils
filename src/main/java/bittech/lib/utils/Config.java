@@ -38,9 +38,13 @@ public class Config {
 		instance = config;
 	}
 
+	public static Config createSeparateInstance() {
+		return new Config();
+	}
+	
 	private Config() {
 	}
-
+	
 	public void addEntry(String name, Object value) {
 		if (entries.containsKey(name)) {
 			throw new StoredException("Cannot add entry '" + name + "'. Such entry already exists", null);

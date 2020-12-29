@@ -8,7 +8,6 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 import bittech.lib.utils.Bytes;
-import bittech.lib.utils.Utils;
 
 public class SymKeys {
 

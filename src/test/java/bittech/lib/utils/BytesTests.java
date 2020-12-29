@@ -23,5 +23,11 @@ public class BytesTests extends TestCase {
 		Assert.assertArrayEquals(bytes, Bytes.fromBase64(str).asByteArray());
 		}
 	}
+	
+	public void testBytes() {
+		Bytes bytes = Bytes.fromArray("gowno".getBytes());
+		System.out.println("Bytes: " + bytes);
+		Assert.assertArrayEquals("gowno".getBytes(), bytes.asByteArray());
+	}	
 
 }

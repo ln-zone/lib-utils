@@ -8,4 +8,8 @@ public class Try {
 			ex.printStackTrace();
 		}
 	}
+
+	public static void dupa() {
+		System.out.println("Costam");
+	}
 }

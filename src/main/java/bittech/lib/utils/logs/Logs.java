@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import bittech.lib.utils.Try;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class Logs implements AutoCloseable {
 	}
 
 	public static synchronized void resetInstance() {
+		instance.close();
 		instance = new Logs();
 	}
 
@@ -167,9 +169,9 @@ public class Logs implements AutoCloseable {
 	}
 
 	@Override
-	public void close() throws Exception {
-		notificator.close();
-		notificatorForMark.close();
+	public void close() {
+		Try.printIfThrown(notificator::close);
+		Try.printIfThrown(notificatorForMark::close);
 	}
 
 }

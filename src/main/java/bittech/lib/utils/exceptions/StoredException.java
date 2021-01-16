@@ -30,7 +30,10 @@ public class StoredException extends RuntimeException {
 		if (print) {
 			this.printStackTrace();
 		}
+	}
 
+	public static void store(String message, Throwable cause) {
+		new StoredException(message, cause);
 	}
 
 	public long getId() {
@@ -42,7 +45,7 @@ public class StoredException extends RuntimeException {
 	}
 
 	public List<String> listReasons() {
-		List<String> reasons = new LinkedList<String>();
+		List<String> reasons = new LinkedList<>();
 		Throwable myEx = this.getCause();
 		while (myEx != null) {
 			reasons.add(myEx.getMessage());

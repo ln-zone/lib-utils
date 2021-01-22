@@ -2,6 +2,8 @@ package bittech.lib.utils;
 
 import bittech.lib.utils.exceptions.StoredException;
 
+import java.math.BigDecimal;
+
 public class Require {
 
 	private Require() {
@@ -12,6 +14,14 @@ public class Require {
 			throw new StoredException("\"" + name + "\" cannot be null", null);
 		}
 		return obj;
+	}
+
+	public static BigDecimal inRange(BigDecimal value, BigDecimal valFrom, BigDecimal valTo, String name) {
+		notNull(value, name);
+		if((value.compareTo(valFrom) < 0) || (value.compareTo(valTo) > 0)) {
+			throw new StoredException("\"" + name + "\" must be value between " + valFrom + " and " + valTo, null);
+		}
+		return value;
 	}
 
 	public static int inRange(int value, int valFrom, int valTo, String name) {

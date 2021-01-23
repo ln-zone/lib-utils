@@ -42,6 +42,14 @@ public class Utils {
 		System.out.println(JsonBuilder.build().toJson(obj));
 	}
 
+	public static void sleep(int msec) {
+		try {
+			Thread.sleep(msec);
+		} catch (InterruptedException e) {
+			throw new RuntimeException("Sleep failed", e);
+		}
+	}
+
 	public static void prnList(List<?> list) {
 		int i = 0;
 		for (Object obj : list) {

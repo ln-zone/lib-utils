@@ -26,7 +26,6 @@ import bittech.lib.utils.json.RawJson;
 
 public class Database implements AutoCloseable {
     private static final String MIX_COLLECTION_NAME = "mix";
-    private static final String DEPOSIT = "deposit";
 
     private MongoDatabase mongoDatabase;
     private MongoClient mongoClient;
@@ -154,7 +153,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected boolean existObject(String key, String value, String nameOfCollection) {
+    public boolean existObject(String key, String value, String nameOfCollection) {
         try {
             MongoCollection<Document> collectionToDeleteDocument = mongoDatabase.getCollection(nameOfCollection);
             for (Document document : collectionToDeleteDocument.find()) {
@@ -215,7 +214,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected Document getDocumentbyId(String collection, String key, String value) {
+    public Document getDocumentbyId(String collection, String key, String value) {
         try {
             Document document = new Document();
             document.put(key, value);
@@ -309,23 +308,6 @@ public class Database implements AutoCloseable {
             collection.findOneAndReplace(document, document1);
         } catch (Exception e) {
             throw new StoredException("Failed to update entry for id: " + id, e);
-        }
-    }
-
-    public void updateAddressValue(String value, BigDecimal valueToChange, Document change) {
-        try {
-            if (existObject("address", value, DEPOSIT)) {
-                MongoCollection<Document> collection = mongoDatabase.getCollection(DEPOSIT);
-                Document document = getDocumentbyId(DEPOSIT, "address", value);
-                Document documentNew = new Document();
-                documentNew.put("address", document.get("address"));
-                documentNew.put("value", valueToChange);
-                collection.findOneAndReplace(document, documentNew);
-            } else {
-                saveToDataBase(change, DEPOSIT);
-            }
-        } catch (Exception e) {
-            throw new StoredException("Failed to update address value " + value, e);
         }
     }
 

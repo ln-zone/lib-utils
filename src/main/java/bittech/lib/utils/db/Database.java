@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Consumer;
 
+import bittech.lib.utils.Require;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -25,13 +27,22 @@ import bittech.lib.utils.json.JsonBuilder;
 import bittech.lib.utils.json.RawJson;
 
 public class Database implements AutoCloseable {
+
+
+    private boolean enableWriteAccessCheck;
+    private final String uuid;
+
     private static final String MIX_COLLECTION_NAME = "mix";
 
     private MongoDatabase mongoDatabase;
     private MongoClient mongoClient;
 
+    private Runnable evWriteAccessLost;
+
     public Database(String uriStr, String dbName) {
         try {
+            enableWriteAccessCheck = false;
+            this.uuid = UUID.randomUUID().toString();
             MongoClientURI uri = new MongoClientURI(uriStr);
             CodecRegistry pojoCodecRegistry = org.bson.codecs.configuration.CodecRegistries.fromRegistries(
                     MongoClientSettings.getDefaultCodecRegistry(), org.bson.codecs.configuration.CodecRegistries
@@ -41,6 +52,7 @@ public class Database implements AutoCloseable {
             if (!collectionExists(MIX_COLLECTION_NAME)) {
                 createCollection(MIX_COLLECTION_NAME);
             }
+            enableWriteAccessCheck = true;
             System.out.println("Database has been initialized ! ");
         } catch (Exception ex) {
             throw new StoredException("Failed to init db", ex);
@@ -52,7 +64,37 @@ public class Database implements AutoCloseable {
                 Config.getInstance().getEntry("mongodbName", String.class));
     }
 
-    public boolean dbInit() { // TODO: Ogolna wartosc
+    public void onWriteAccessLost(Runnable evWriteAccessLost) {
+        this.evWriteAccessLost = Require.notNull(evWriteAccessLost, "evWriteAccessLost");
+    }
+
+    public synchronized void applyWriteAccess() {
+        enableWriteAccessCheck = false;
+        addOrUpdate(MIX_COLLECTION_NAME, "writeAccess", uuid);
+        enableWriteAccessCheck = true;
+    }
+
+    public synchronized void assertWriteAccess() {
+        try {
+            if(!enableWriteAccessCheck) {
+                return;
+            }
+            if(!collectionExists("mix")) {
+                throw new Exception("No mix collection = no write acces entry");
+            }
+            String accessUuid = this.getEntry("writeAccess", String.class);
+            if (!accessUuid.equals(uuid)) {
+                throw new Exception("DB write access was assigned by someone else. Our UUID= " + uuid + " but there is " + accessUuid);
+            }
+        }catch(Exception ex) {
+            if(evWriteAccessLost != null) {
+                evWriteAccessLost.run();
+            }
+            throw new StoredException("No rights to write to DB", ex);
+        }
+    }
+
+    public synchronized boolean dbInit() { // TODO: Ogolna wartosc
         return getOrAddEntry("isInitializedTokensList", false, Boolean.class, "mix");
     }
 
@@ -61,7 +103,8 @@ public class Database implements AutoCloseable {
 //        mongoDatabase.getCollection(collection).createIndex(Indexes.ascending(key));
 //    }
 
-    public void deleteCollection(String collection) {
+    public synchronized void deleteCollection(String collection) {
+        assertWriteAccess();
         mongoDatabase.getCollection(collection).drop();
     }
 
@@ -85,22 +128,24 @@ public class Database implements AutoCloseable {
 
     public static void connectAndClean(String uri, String name) {
         try (Database database = new Database(uri, name)) {
+            database.applyWriteAccess();
             database.clean();
         }
     }
 
-    public void clean() {
+    public synchronized void clean() {
         try {
+            assertWriteAccess();
             for (String name : mongoDatabase.listCollectionNames()) {
                 mongoDatabase.getCollection(name).drop();
             }
         } catch (Exception e) {
-            throw new StoredException("Failed to delete date from database ", e);
+            throw new StoredException("Failed to delete all data from database ", e);
         }
 
     }
 
-    public MongoCollection<Document> getCollection(String nameOfCollection) {
+    public synchronized MongoCollection<Document> getCollection(String nameOfCollection) {
         try {
             return mongoDatabase.getCollection(nameOfCollection);
         } catch (Exception e) {
@@ -108,11 +153,14 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public <T> T getEntry(String id, Class<T> clazz) {
+    public synchronized <T> T getEntry(String id, Class<T> clazz) {
         try {
             Document document = new Document();
             document.put("_id", id);
             Document document1 = getCollection("mix").find(document).first();
+            if(document1 == null) {
+                throw new Exception("No entry in mix collection for _id = " + id);
+            }
             String strJson = document1.toJson();
             Wrapper myJson = JsonBuilder.build().fromJson(strJson, Wrapper.class);
             return myJson.value.fromJson(clazz);
@@ -121,7 +169,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public boolean collectionExists(String collectionName) {
+    public synchronized boolean collectionExists(String collectionName) {
         try {
             for (String nameCollection : mongoDatabase.listCollectionNames()) {
                 if (nameCollection.equals(collectionName)) {
@@ -134,8 +182,9 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public void createCollection(String nameOfCollection) {
+    public synchronized void createCollection(String nameOfCollection) {
         try {
+            assertWriteAccess();
             if (!collectionExists(nameOfCollection)) {
                 mongoDatabase.createCollection(nameOfCollection);
             }
@@ -144,8 +193,9 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected void deleteDocument(String key, String value, String nameOfCollection) {
+    protected synchronized void deleteDocument(String key, String value, String nameOfCollection) {
         try {
+            assertWriteAccess();
             mongoDatabase.getCollection(nameOfCollection).deleteOne(new Document(key, value));
         } catch (Exception e) {
             throw new StoredException(
@@ -153,7 +203,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public boolean existObject(String key, String value, String nameOfCollection) {
+    public synchronized boolean existObject(String key, String value, String nameOfCollection) {
         try {
             MongoCollection<Document> collectionToDeleteDocument = mongoDatabase.getCollection(nameOfCollection);
             for (Document document : collectionToDeleteDocument.find()) {
@@ -168,11 +218,11 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public boolean isEntryExists(String id) {
+    public synchronized boolean isEntryExists(String id) {
         return existObject("_id", id, MIX_COLLECTION_NAME);
     }
 
-    protected void assertEntryExists(String id, String collectionName) {
+    protected synchronized void assertEntryExists(String id, String collectionName) {
         if (!existObject("_id", id, collectionName)) {
             throw new StoredException(
                     "Such entry do not exist with id: " + id + " in collection " + MIX_COLLECTION_NAME, null);
@@ -198,14 +248,15 @@ public class Database implements AutoCloseable {
 //        }
 //    }
 
-    protected void assertCollectionExists(String nameOfCollection) throws Exception {
+    protected synchronized void assertCollectionExists(String nameOfCollection) throws Exception {
         if (!collectionExists(nameOfCollection)) {
             throw new Exception("Such collection do not exists: " + nameOfCollection);
         }
     }
 
-    public void saveToDataBase(Document document, String nameOfCollection) {
+    public synchronized void saveToDataBase(Document document, String nameOfCollection) {
         try {
+            assertWriteAccess();
             assertCollectionExists(nameOfCollection);
             MongoCollection<Document> collection = mongoDatabase.getCollection(nameOfCollection);
             collection.insertOne(document);
@@ -214,7 +265,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public Document getDocumentbyId(String collection, String key, String value) {
+    public synchronized Document getDocumentbyId(String collection, String key, String value) {
         try {
             Document document = new Document();
             document.put(key, value);
@@ -224,7 +275,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected <T> List<T> getCollectionToClass(String collection, Class<T> clazz) {
+    protected synchronized <T> List<T> getCollectionToClass(String collection, Class<T> clazz) {
         try {
             List<T> list = new ArrayList<>();
             Gson json = JsonBuilder.build();
@@ -251,7 +302,7 @@ public class Database implements AutoCloseable {
 //        }
 //    }
 
-    protected <T> T getLastObjectToClass(String collection, Class<T> clazz) {
+    protected synchronized <T> T getLastObjectToClass(String collection, Class<T> clazz) {
         try {
             Document document = getCollection(collection).find().sort(new Document("_id", -1)).first();
             Gson json = JsonBuilder.build();
@@ -262,7 +313,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected <T> List<T> findMany(String key, String value, String collectionName, Class<T> clazz) {
+    protected synchronized <T> List<T> findMany(String key, String value, String collectionName, Class<T> clazz) {
         try {
             Gson json = JsonBuilder.build();
             List<T> list = new ArrayList<>();
@@ -276,7 +327,7 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected <T> T findOne(String key, String value, String collectionName, Class<T> clazz) {
+    protected synchronized <T> T findOne(String key, String value, String collectionName, Class<T> clazz) {
         try {
             List<T> list = findMany(key, value, collectionName, clazz);
             if (list.size() != 1) {
@@ -289,16 +340,18 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public void updateEntry(String id, Object entry, String collectionName) {
-        updateEntry(collectionName, id, entry, "_id");
-    }
+//    public void updateEntry(String id, Object entry, String collectionName) {
+//        updateEntry(collectionName, id, entry, "_id");
+//    }
 
-    public void updateEntry(String id, Object entry) {
+    public synchronized void updateEntry(String id, Object entry) {
+        assertWriteAccess();
         updateEntry("mix", id, entry, "_id");
     }
 
-    public void updateEntry(String collectionName, String id, Object entry, String key) {
+    public synchronized void updateEntry(String collectionName, String id, Object entry, String key) {
         try {
+            assertWriteAccess();
             assertEntryExists(id, collectionName);
             MongoCollection<Document> collection = mongoDatabase.getCollection(collectionName);
             Document document = getDocumentbyId(collectionName, key, id);
@@ -311,8 +364,18 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public <T> void addEntry(String id, T entry, String collection) {
+    public synchronized void addOrUpdate(String collectionName, String id, Object entry) {
+        assertWriteAccess();
+        if(isEntryExists(id)) {
+            updateEntry(collectionName, id, entry, "_id");
+        } else {
+            addEntry(id, entry, collectionName);
+        }
+    }
+
+    public synchronized <T> void addEntry(String id, T entry, String collection) {
         try {
+            assertWriteAccess();
             String json = Utils.toJson(new Wrapper(new RawJson(entry)));
             Document document = Document.parse(json);
             document.put("_id", id);
@@ -322,7 +385,8 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public <T> T getOrAddEntry(String id, T defaultValue, Class<T> entryType, String collection) {
+    public synchronized <T> T getOrAddEntry(String id, T defaultValue, Class<T> entryType, String collection) {
+        assertWriteAccess();
         if (!isEntryExists(id)) {
             addEntry(id, defaultValue, collection);
             return defaultValue;
@@ -331,12 +395,12 @@ public class Database implements AutoCloseable {
         }
     }
 
-    public MongoCollection<?> getMongoCollection(String name) {
-        return mongoDatabase.getCollection(name);
-    }
+//    public MongoCollection<?> getMongoCollection(String name) {
+//        return mongoDatabase.getCollection(name);
+//    }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         mongoClient.close();
     }
 

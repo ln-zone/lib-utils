@@ -15,7 +15,7 @@ public class Log {
 	}
 
 	FormattedTime time;
-	long timeMillsec;
+	long timeMillsec = -1;
 	Severity severity;
 	private boolean inspectNeeded;
 	Map<String, Object> params = new LinkedHashMap<String, Object>();
@@ -38,11 +38,14 @@ public class Log {
 
 	public void event(String message) {
 		Date now = new Date();
-		timeMillsec = now.getTime();
+		if(timeMillsec == -1) {
+			timeMillsec = now.getTime();
+		}
 		time = new FormattedTime(now, Precision.MILLISECONDS);
 		event = Require.notNull(message, "event");
 		Logs.getInstance().addLog(this);
 	}
+
 
 	public Log setSeverity(Severity severity) {
 		this.severity = Require.notNull(severity, "severity");

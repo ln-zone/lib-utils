@@ -46,7 +46,6 @@ public class Log {
 		Logs.getInstance().addLog(this);
 	}
 
-
 	public Log setSeverity(Severity severity) {
 		this.severity = Require.notNull(severity, "severity");
 		return this;

@@ -5,6 +5,7 @@ import bittech.lib.utils.json.JsonBuilder;
 import org.bson.Document;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DbCollection<T> {
 
@@ -12,15 +13,22 @@ public class DbCollection<T> {
     private Database database;
     private Class<T> clazz;
 
+    private AtomicBoolean autoRecreateCollection = new AtomicBoolean(false);
+
     public DbCollection(String collectionName, Class<T> clazz, Database database) {
         database.createCollection(collectionName);
         this.collectionName = collectionName;
         this.database = database;
         this.clazz = clazz;
+        this.clazz = clazz;
+    }
+
+    public void setAutoRecreateCollection(boolean value) {
+        this.autoRecreateCollection.set(value);
     }
 
     public void add(T t) {
-        database.saveToDataBase(makeDocument(t), collectionName);
+        database.saveToDataBase(makeDocument(t), getOrCreateCollection());
     }
 
     private Document makeDocument(Object obj) {
@@ -33,12 +41,12 @@ public class DbCollection<T> {
     }
 
     public List<T> listAll() {
-        return database.getCollectionToClass(collectionName, clazz);
+        return database.getCollectionToClass(getOrCreateCollection(), clazz);
     }
 
     public T findOne(String key, String value) {
         try {
-            return database.findOne(key, value, collectionName, clazz);
+            return database.findOne(key, value, getOrCreateCollection(), clazz);
         } catch (Exception e) {
             throw new StoredException("Failed to find one", e);
         }
@@ -46,7 +54,7 @@ public class DbCollection<T> {
 
     public List<T> findMany(String key, String value) {
         try {
-            return database.findMany(key, value, collectionName, clazz);
+            return database.findMany(key, value, getOrCreateCollection(), clazz);
         } catch (Exception e) {
             throw new StoredException("Failed to find one", e);
         }
@@ -54,14 +62,14 @@ public class DbCollection<T> {
 
     public void delete(String key, String value) {
         try {
-            database.deleteDocument(key, value, collectionName);
+            database.deleteDocument(key, value, getOrCreateCollection());
         } catch (Exception e) {
             throw new StoredException("Failed to delete", e);
         }
     }
 
     public boolean exists(String key, String value) {
-        return database.existObject(key, value, collectionName);
+        return database.existObject(key, value, getOrCreateCollection());
     }
 
     public void moveOne(String key, String value, DbCollection<T> toCollection) {
@@ -75,15 +83,22 @@ public class DbCollection<T> {
     }
 
     public long getColletionSize() {
-        return database.getCollection(collectionName).countDocuments();
+        return database.getCollection(getOrCreateCollection()).countDocuments();
     }
 
     public T getLastObject() {
-        return database.getLastObjectToClass(collectionName, clazz);
+        return database.getLastObjectToClass(getOrCreateCollection(), clazz);
     }
 
     public void update(String key, String value, T object) {
         delete(key, value);
         add(object);
+    }
+
+    private String getOrCreateCollection() {
+        if(autoRecreateCollection.get()) {
+            database.createCollection(collectionName);
+        }
+        return collectionName;
     }
 }

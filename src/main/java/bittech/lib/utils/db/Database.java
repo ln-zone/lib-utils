@@ -41,6 +41,7 @@ public class Database implements AutoCloseable {
 
     public Database(String uriStr, String dbName) {
         try {
+            System.out.println("Connecting to database " + dbName + ": " + uriStr + "... ");
             enableWriteAccessCheck = false;
             this.uuid = UUID.randomUUID().toString();
             MongoClientURI uri = new MongoClientURI(uriStr);

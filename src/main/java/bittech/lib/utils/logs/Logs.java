@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import bittech.lib.utils.Try;
 import org.slf4j.Logger;
@@ -99,6 +100,15 @@ public class Logs implements AutoCloseable {
 			}
 		}
 
+	}
+
+	public synchronized void consumeAll(Consumer<Log> consumer) {
+		list.forEach(consumer);
+		deleteAll();
+	}
+
+	private synchronized void deleteAll() {
+		list.clear();
 	}
 
 	private synchronized void save() throws StoredException {

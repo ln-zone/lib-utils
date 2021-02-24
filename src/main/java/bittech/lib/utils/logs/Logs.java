@@ -27,7 +27,7 @@ public class Logs implements AutoCloseable {
 
 	static Logs instance = new Logs();
 
-	final boolean printLogs;
+	boolean printLogs;
 
 	public static synchronized Logs getInstance() {
 		return instance;
@@ -55,6 +55,10 @@ public class Logs implements AutoCloseable {
 		} else {
 			LOGGER.info("Logs will not be loaded and saved");
 		}
+	}
+
+	public void setPrintLogs(boolean printLogs) {
+		this.printLogs = printLogs;
 	}
 
 	public void registerNewLogListener(NewLogEvent newLogListener) {

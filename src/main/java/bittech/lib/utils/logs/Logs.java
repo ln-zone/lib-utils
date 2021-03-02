@@ -48,7 +48,7 @@ public class Logs implements AutoCloseable {
 
 	public Logs() {
 		printLogs = Config.getInstance().getEntryOrDefault("printLogs", Boolean.class, false);
-		boolean saveLogs = Config.getInstance().getEntryOrDefault("saveLogs", Boolean.class, true);
+		boolean saveLogs = Config.getInstance().getEntryOrDefault("saveLogs", Boolean.class, false);
 		if (saveLogs) {
 			load();
 			new SavingThread().start();

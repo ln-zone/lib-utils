@@ -10,15 +10,19 @@ import java.util.List;
 
 public class LogsTester {
 
-    List<Log> logs = new LinkedList<>();
+    private final List<Log> logs = new LinkedList<>();
 
     public LogsTester() {
-        Logs.getInstance().consumeAll((newLog) -> {
-            logs.add(newLog);
-        });
+        Logs.getInstance().registerNewLogListener(this::addLog);
+//        addLogs();
     }
 
-    public Log consumeLog(String eventMsg) {
+    private synchronized void addLog(Log log) {
+        Utils.prn("LOG", log);
+        logs.add(log);
+    }
+
+    public synchronized Log consumeLog(String eventMsg) {
         for(Log log: logs) {
             if(log.getEvent().equals(eventMsg)) {
                 logs.remove(log);
@@ -29,16 +33,16 @@ public class LogsTester {
     }
 
 
-    public void assertNoMoreLogs() {
+    public synchronized void assertNoMoreLogs() {
         if(logs.size() != 0) {
-            System.err.println("Logs that was not consumed:");
-            logs.forEach((log) -> Utils.prn(log));
+            System.err.println("Logs that were not consumed:");
+            logs.forEach(Utils::prn);
             Assert.fail("No all logs were consumed");
         }
     }
 
-    public void printAllLogs() {
+    public synchronized void printAllLogs() {
         System.out.println("Logs amount: " + logs.size());
-        logs.forEach((log) -> Utils.prn(log));
+        logs.forEach(Utils::prn);
     }
 }

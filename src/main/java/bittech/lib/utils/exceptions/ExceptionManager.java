@@ -31,6 +31,11 @@ public class ExceptionManager {
 		// TODO Auto-generated constructor stub
 	}
 
+	public synchronized void close() {
+		exceptions.clear();
+		exceptionsToLogsConverters.close();
+	}
+
 	public synchronized void reset() {
 		exceptions.clear();
 		exceptionsToLogsConverters.close();

@@ -1,36 +1,30 @@
 package bittech.lib.utils.logs;
 
 import bittech.lib.utils.Config;
-import bittech.lib.utils.Require;
 import bittech.lib.utils.Try;
 import bittech.lib.utils.Utils;
 import bittech.lib.utils.db.Database;
 import bittech.lib.utils.db.DbCollection;
 import bittech.lib.utils.exceptions.StoredException;
 
-import java.util.Collections;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class LogsSaver implements AutoCloseable {
 
-    Database database;
-    DbCollection<Log> dbCollection;
+    private Database database;
+    private DbCollection<Log> dbCollection;
 
-    AtomicLong lastLogTime;
+    private final AtomicLong lastLogTime;
 
     public LogsSaver() {
         this("logsSaver");
     }
 
-    public LogsSaver(String configEntryName) {
+    public LogsSaver(SaverConf conf) {
         try {
-            SaverConf conf = Config.getInstance().getEntry(configEntryName, SaverConf.class);
-
             lastLogTime = new AtomicLong(0);
 
-            if(conf.enabled == false) {
+            if(!conf.enabled) {
                 System.out.println("!!! Log saver is disabled !!!");
                 return;
             }
@@ -47,6 +41,10 @@ public class LogsSaver implements AutoCloseable {
         } catch (Exception ex) {
             throw new StoredException("Failed to crate LogsSaver", ex);
         }
+    }
+
+    public LogsSaver(String configEntryName) {
+        this(Config.getInstance().getEntry(configEntryName, SaverConf.class));
     }
 
     private void waitForLoggingFinished() {

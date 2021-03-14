@@ -6,6 +6,8 @@ import bittech.lib.utils.db.Database;
 import bittech.lib.utils.db.DbCollection;
 import bittech.lib.utils.storage.InjectStorage;
 import bittech.lib.utils.tests.Container;
+import bittech.lib.utils.tests.SavedLogsTester;
+import com.jayway.jsonpath.DocumentContext;
 import junit.framework.TestCase;
 import org.junit.Assert;
 
@@ -49,21 +51,20 @@ public class LogSaverTest extends TestCase {
 
     public void testBasic() {
         try(LogsSaver ignored = new LogsSaver()) {
-            for(int i=0; i<1000; i++) {
+            for(int i=0; i<101; i++) {
                 Log.build().param("counter", i).setSeverity(Log.Severity.Warning).setInspectNeeded(true).event("Sie dodao");
             }
         }
 
-        SaverConf conf = Config.getInstance().getEntry("logsSaver", SaverConf.class);
-        Database db = new Database(conf.dbUri, conf.dbName);
-        DbCollection<ReadOnlyLog> dbCol = new DbCollection<>(conf.collectionName, ReadOnlyLog.class, db);
+        SavedLogsTester slt = new SavedLogsTester("logsSaver");
 
-        List<ReadOnlyLog> allLogs = dbCol.listAll();
+        DocumentContext doc = slt.waitForLog("$.params.counter", "...");
 
-        Assert.assertEquals(1000, allLogs.size());
-        for(ReadOnlyLog log : allLogs) {
-            Assert.assertEquals("Sie dodao", log.event);
-        }
+        Assert.assertEquals("100", doc.read("$.params.counter"));
+        Assert.assertEquals("Warning", doc.read("$.severity"));
+        Assert.assertEquals(true, doc.read("$.inspectNeeded"));
+
+        System.out.println("RET: " + doc.jsonString());
     }
 
     public void testTwoSavers() {

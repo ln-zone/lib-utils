@@ -202,18 +202,15 @@ public class NotificatorTests extends TestCase {
 					try {
 						Thread.sleep(3000);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				});
-				System.out.println("Notified");
 			}
 
-			System.out.println("Teraz1");
 			Assert.assertEquals(false, observer.wrongOrder);
 			Assert.assertEquals(false, observer.interrupted);
 		}
-		System.out.println("Teraz");
+
 //		Notificator.stopAll();
 		{
 			ToNotifyNumber observer = new ToNotifyNumber();

@@ -28,7 +28,6 @@ import bittech.lib.utils.json.RawJson;
 
 public class Database implements AutoCloseable {
 
-
     private boolean enableWriteAccessCheck;
     private final String uuid;
 
@@ -38,6 +37,8 @@ public class Database implements AutoCloseable {
     private MongoClient mongoClient;
 
     private Runnable evWriteAccessLost;
+
+    private boolean opened = false;
 
     public Database(String uriStr, String dbName) {
         try {
@@ -54,6 +55,7 @@ public class Database implements AutoCloseable {
                 createCollection(MIX_COLLECTION_NAME);
             }
             enableWriteAccessCheck = true;
+            opened = true;
             System.out.println("Database has been initialized ! ");
         } catch (Exception ex) {
             throw new StoredException("Failed to init db", ex);
@@ -67,6 +69,10 @@ public class Database implements AutoCloseable {
 
     public void onWriteAccessLost(Runnable evWriteAccessLost) {
         this.evWriteAccessLost = Require.notNull(evWriteAccessLost, "evWriteAccessLost");
+    }
+
+    public synchronized void disableWriteAccessCheck() {
+        enableWriteAccessCheck = false;
     }
 
     public synchronized void applyWriteAccess() {
@@ -185,8 +191,8 @@ public class Database implements AutoCloseable {
 
     public synchronized void createCollection(String nameOfCollection) {
         try {
-            assertWriteAccess();
             if (!collectionExists(nameOfCollection)) {
+                assertWriteAccess();
                 mongoDatabase.createCollection(nameOfCollection);
             }
         } catch (Exception e) {
@@ -400,9 +406,14 @@ public class Database implements AutoCloseable {
 //        return mongoDatabase.getCollection(name);
 //    }
 
+    public synchronized boolean isOpened() {
+        return opened;
+    }
+
     @Override
     public synchronized void close() {
         mongoClient.close();
+        opened = false;
     }
 
 }

@@ -1,4 +1,4 @@
-package bittech.lib.utils;
+package bittech.lib.utils.logs;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
+import bittech.lib.utils.Utils;
 import org.junit.Assert;
 import org.junit.Ignore;
 
@@ -17,10 +18,15 @@ public class LogTests extends TestCase {
 
 	@Override
 	public void setUp() {
-		Logs.resetInstance();
+
 	}
 
-	public void testBasicLog() throws InterruptedException {
+	@Override
+	protected void tearDown() throws Exception {
+		Logs.getInstance().close();
+	}
+
+	public void testBasicLog() {
 		Logs.getInstance().registerNewLogListener((log) -> {
 
 			System.out.println("I found new log !");
@@ -31,8 +37,27 @@ public class LogTests extends TestCase {
 		Log log = new Log();
 		log.param("name", 200);
 		log.event("I'm log");
-		Thread.sleep(50);
+		Utils.sleep(50);
+	}
 
+	public void testDeleteOld() {
+		Logs.getInstance().setLogLifetimeMillisec(2000);
+		for(int i=0; i<1000; i++){
+			Log log = new Log();
+			log.param("i", i);
+			log.event("I'm log");
+		}
+		Utils.sleep(1000);
+		for(int i=0; i<999; i++){
+			Log log = new Log();
+			log.param("i", i);
+			log.event("I'm log");
+		}
+		Assert.assertEquals(1999, Logs.getInstance().count());
+		Utils.sleep(1500);
+		Assert.assertEquals(999, Logs.getInstance().count());
+		Utils.sleep(1500);
+		Assert.assertEquals(0, Logs.getInstance().count());
 	}
 
 	public void testGetTimeMillisAfterChange() throws InterruptedException {

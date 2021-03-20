@@ -1,71 +1,69 @@
 package bittech.lib.utils.logs;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.lang.reflect.Type;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Consumer;
-
-import bittech.lib.utils.Try;
+import bittech.lib.utils.*;
+import bittech.lib.utils.json.JsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.reflect.TypeToken;
-
-import bittech.lib.utils.Config;
-import bittech.lib.utils.Notificator;
-import bittech.lib.utils.exceptions.StoredException;
-import bittech.lib.utils.json.JsonBuilder;
+import java.util.*;
 
 public class Logs implements AutoCloseable {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(Logs.class);
 
-	static Logs instance = new Logs();
+	private boolean initialized = false;
 
-	boolean printLogs;
+	private final static Logs instance = new Logs();
 
-	public static synchronized Logs getInstance() {
-		return instance;
-	}
+	private boolean printLogs;
 
-	public static synchronized void resetInstance() {
-		instance.close();
-		instance = new Logs();
-	}
+	private Timer deleteOldTimer;
 
 	private long logLifeTimeMillisec = 60 * 60 * 1000;
 
-	Notificator<NewLogEvent> notificator = new Notificator<NewLogEvent>();
-	Notificator<LogChangedEvent> notificatorForMark = new Notificator<>();
+	public static synchronized Logs getInstance() {
+		if(!instance.initialized) {
+			instance.init();
+		}
+		return instance;
+	}
 
-	private List<Log> list = new LinkedList<Log>();
-	// private List<Log> listCopy = new LinkedList<Log>();
+	private Notificator<NewLogEvent> notificator;
+	private Notificator<LogChangedEvent> notificatorForMark;
+
+	private final List<Log> list = new LinkedList<>();
 
 	public Logs() {
 		printLogs = Config.getInstance().getEntryOrDefault("printLogs", Boolean.class, false);
-		boolean saveLogs = Config.getInstance().getEntryOrDefault("saveLogs", Boolean.class, false);
-		if (saveLogs) {
-			load();
-			new SavingThread().start();
-		} else {
-			LOGGER.info("Logs will not be loaded and saved");
-		}
 	}
 
-	public void setPrintLogs(boolean printLogs) {
+	private synchronized void init() {
+		notificator = new Notificator<>();
+		notificatorForMark = new Notificator<>();
+
+		TimerTask task = new TimerTask() {
+			public void run() {
+				deleteOld();
+			}
+		};
+		deleteOldTimer = new Timer("DeleteOldLogsTimer");
+		deleteOldTimer.schedule(task, 100L, 100L);
+		initialized = true;
+	}
+
+	public synchronized void setLogLifetimeMillisec(long newLifetime) {
+		this.logLifeTimeMillisec = Require.inRange(newLifetime, 0, Long.MAX_VALUE, "newLifetime");
+	}
+
+	public synchronized void setPrintLogs(boolean printLogs) {
 		this.printLogs = printLogs;
 	}
 
-	public void registerNewLogListener(NewLogEvent newLogListener) {
+	public synchronized void registerNewLogListener(NewLogEvent newLogListener) {
 		notificator.register(newLogListener);
 	}
 
-	public void registerLogChangedListener(LogChangedEvent onLogChange) {
+	public synchronized void registerLogChangedListener(LogChangedEvent onLogChange) {
 		notificatorForMark.register(onLogChange);
 	}
 
@@ -80,7 +78,7 @@ public class Logs implements AutoCloseable {
 
 	public synchronized void addLog(Log log) {
 		if (printLogs) {
-			System.out.println("LOG: " + log.event);
+			Utils.prn("LOG: " + log.event,log);
 		}
 		LOGGER.debug("Log added");
 		Log copied = JsonBuilder.build().fromJson(JsonBuilder.build().toJson(log), Log.class);
@@ -95,69 +93,7 @@ public class Logs implements AutoCloseable {
 	private synchronized void deleteOld() {
 		long nowMillisec = new Date().getTime();
 		long oldestTime = nowMillisec - logLifeTimeMillisec;
-
-		Iterator<Log> i = list.iterator();
-		while (i.hasNext()) {
-			Log log = i.next();
-			if (log.timeMillsec < oldestTime && log.getInspectNeeded() == false) {
-				i.remove();
-			}
-		}
-
-	}
-
-	public synchronized void consumeAll(Consumer<Log> consumer) {
-		list.forEach(consumer);
-		deleteAll();
-	}
-
-	private synchronized void deleteAll() {
-		list.clear();
-	}
-
-	private synchronized void save() throws StoredException {
-		try {
-			try (PrintWriter out = new PrintWriter("logs.json")) {
-				JsonBuilder.build().toJson(list, out);
-			}
-		} catch (Exception ex) {
-			throw new StoredException("Cannot save logs", ex);
-		}
-	}
-
-	private synchronized void load() {
-		try {
-			File file = new File("logs.json");
-			LOGGER.debug("Loading logs");
-			if (file.exists()) {
-				try (FileReader reader = new FileReader(file)) {
-					Type listType = new TypeToken<LinkedList<Log>>() {
-					}.getType();
-					list.clear();
-					list.addAll(JsonBuilder.build().fromJson(reader, listType));
-				}
-				LOGGER.debug("Loaded logs: " + list.size());
-			}
-		} catch (Exception ex) {
-			new StoredException("Cannot load logs", ex);
-		}
-	}
-
-	private class SavingThread extends Thread {
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					deleteOld();
-					Thread.sleep(1000);
-					save();
-					Thread.sleep(9000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
+		list.removeIf(log -> log.timeMillsec < oldestTime);
 	}
 
 	public synchronized int count() {
@@ -174,18 +110,13 @@ public class Logs implements AutoCloseable {
 		}
 	}
 
-	public static void main(String[] args) {
-
-		Logs.getInstance().registerNewLogListener((log) -> System.out.println(log));
-
-		Logs.getInstance().markInspected(1234);
-
-	}
-
 	@Override
-	public void close() {
+	public synchronized void close() {
+		initialized = false;
+		Try.printIfThrown(deleteOldTimer::cancel);
 		Try.printIfThrown(notificator::close);
 		Try.printIfThrown(notificatorForMark::close);
+		list.clear();
 	}
 
 }

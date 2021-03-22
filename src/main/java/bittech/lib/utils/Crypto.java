@@ -1,22 +1,15 @@
 package bittech.lib.utils;
 
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import bittech.lib.utils.exceptions.StoredException;
+import org.apache.commons.codec.binary.Base64;
+import org.testcontainers.shaded.com.google.common.io.BaseEncoding;
+
+import javax.crypto.Cipher;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import javax.crypto.Cipher;
-
-import org.apache.commons.codec.binary.Base64;
-
-import com.google.common.io.BaseEncoding;
-
-import bittech.lib.utils.exceptions.StoredException;
 
 public class Crypto {
 
@@ -59,7 +52,7 @@ public class Crypto {
 			} else {
 				cipher.init(Cipher.ENCRYPT_MODE, getPublicKey(key));
 			}
-			return Base64.encodeBase64String(cipher.doFinal(msg.getBytes("UTF-8")));
+			return Base64.encodeBase64String(cipher.doFinal(msg.getBytes(StandardCharsets.UTF_8)));
 		} catch (Exception ex) {
 			throw new StoredException("Cannot encrypt text '" + msg + "' using key '" + key + "'", ex);
 		}
@@ -73,7 +66,7 @@ public class Crypto {
 			} else {
 				cipher.init(Cipher.DECRYPT_MODE, getPublicKey(key));
 			}
-			return new String(cipher.doFinal(Base64.decodeBase64(msg)), "UTF-8");
+			return new String(cipher.doFinal(Base64.decodeBase64(msg)), StandardCharsets.UTF_8);
 		} catch (Exception ex) {
 			throw new StoredException("Cannot decrypt text '" + msg + "' using key '" + key + "'", ex);
 		}

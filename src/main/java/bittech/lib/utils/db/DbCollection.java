@@ -2,6 +2,7 @@ package bittech.lib.utils.db;
 
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
+import com.mongodb.BasicDBObject;
 import org.bson.Document;
 
 import java.util.List;
@@ -16,7 +17,9 @@ public class DbCollection<T> {
     private AtomicBoolean autoRecreateCollection = new AtomicBoolean(false);
 
     public DbCollection(String collectionName, Class<T> clazz, Database database) {
-        database.createCollection(collectionName);
+        if (!database.collectionExists(collectionName)) {
+            database.createCollection(collectionName);
+        }
         this.collectionName = collectionName;
         this.database = database;
         this.clazz = clazz;
@@ -95,8 +98,16 @@ public class DbCollection<T> {
         add(object);
     }
 
+    public void dropIndexes() {
+        database.dropIndexes(collectionName);
+    }
+
+    public void deleteManyDocuments(BasicDBObject bson) {
+        database.deleteManyDocuments(collectionName, bson);
+    }
+
     private String getOrCreateCollection() {
-        if(autoRecreateCollection.get()) {
+        if (autoRecreateCollection.get()) {
             database.createCollection(collectionName);
         }
         return collectionName;

@@ -1,49 +1,46 @@
 package bittech.lib.utils.db;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
-
+import bittech.lib.utils.Config;
 import bittech.lib.utils.Require;
-import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
-
+import bittech.lib.utils.Utils;
+import bittech.lib.utils.exceptions.StoredException;
+import bittech.lib.utils.json.JsonBuilder;
+import bittech.lib.utils.json.RawJson;
 import com.google.gson.Gson;
+import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Indexes;
+import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
 
-import bittech.lib.utils.Config;
-import bittech.lib.utils.Utils;
-import bittech.lib.utils.exceptions.StoredException;
-import bittech.lib.utils.json.JsonBuilder;
-import bittech.lib.utils.json.RawJson;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 public class Database implements AutoCloseable {
 
-    private boolean enableWriteAccessCheck;
+    private final AtomicBoolean enableWriteAccessCheck;
     private final String uuid;
 
     private static final String MIX_COLLECTION_NAME = "mix";
 
-    private MongoDatabase mongoDatabase;
-    private MongoClient mongoClient;
+    private final MongoDatabase mongoDatabase;
+    private final MongoClient mongoClient;
 
     private Runnable evWriteAccessLost;
 
-    private boolean opened = false;
+    private boolean opened;
 
     public Database(String uriStr, String dbName) {
         try {
+            enableWriteAccessCheck = new AtomicBoolean(false);
             System.out.println("Connecting to database " + dbName + ": " + uriStr + "... ");
-            enableWriteAccessCheck = false;
             this.uuid = UUID.randomUUID().toString();
             MongoClientURI uri = new MongoClientURI(uriStr);
             CodecRegistry pojoCodecRegistry = org.bson.codecs.configuration.CodecRegistries.fromRegistries(
@@ -54,7 +51,7 @@ public class Database implements AutoCloseable {
             if (!collectionExists(MIX_COLLECTION_NAME)) {
                 createCollection(MIX_COLLECTION_NAME);
             }
-            enableWriteAccessCheck = true;
+            enableWriteAccessCheck.set(true);
             opened = true;
             System.out.println("Database has been initialized ! ");
         } catch (Exception ex) {
@@ -72,18 +69,26 @@ public class Database implements AutoCloseable {
     }
 
     public synchronized void disableWriteAccessCheck() {
-        enableWriteAccessCheck = false;
+        enableWriteAccessCheck.set(false);
+    }
+
+    public void dropIndexes(String collection){
+        mongoDatabase.getCollection(collection).dropIndexes();
+    }
+
+    public void deleteManyDocuments(String collection, BasicDBObject bson){
+        mongoDatabase.getCollection(collection).deleteMany(bson);
     }
 
     public synchronized void applyWriteAccess() {
-        enableWriteAccessCheck = false;
+        enableWriteAccessCheck.set(false);
         addOrUpdate(MIX_COLLECTION_NAME, "writeAccess", uuid);
-        enableWriteAccessCheck = true;
+        enableWriteAccessCheck.set(true);
     }
 
     public synchronized void assertWriteAccess() {
         try {
-            if(!enableWriteAccessCheck) {
+            if(!enableWriteAccessCheck.get()) {
                 return;
             }
             if(!collectionExists("mix")) {

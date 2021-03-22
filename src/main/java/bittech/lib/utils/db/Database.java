@@ -11,8 +11,11 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoClientURI;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Indexes;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -110,10 +113,17 @@ public class Database implements AutoCloseable {
         return getOrAddEntry("isInitializedTokensList", false, Boolean.class, "mix");
     }
 
-//    private void createIndex(String collection, String key) {
-//        mongoDatabase.getCollection(collection).listIndexes();
-//        mongoDatabase.getCollection(collection).createIndex(Indexes.ascending(key));
-//    }
+    private void maybeCreateIndex(com.mongodb.client.MongoCollection<org.bson.Document> collection, String key) {
+//        ListIndexesIterable<Document> list = collection.listIndexes(); // TODO: Cosli kolekcja juz istnieje?
+//        for(Document doc: list) {
+//            String val = doc.get("key").toString();
+//            if(key.equals(doc.get("key").toString())) {
+//                System.out.println("Already have index: " + key);
+//                return;
+//            }
+//        }
+        collection.createIndex(Indexes.ascending(key));
+    }
 
     public synchronized void deleteCollection(String collection) {
         assertWriteAccess();
@@ -173,12 +183,16 @@ public class Database implements AutoCloseable {
             if(document1 == null) {
                 throw new Exception("No entry in mix collection for _id = " + id);
             }
-            String strJson = document1.toJson();
-            Wrapper myJson = JsonBuilder.build().fromJson(strJson, Wrapper.class);
-            return myJson.value.fromJson(clazz);
+            return docToObj(document1, clazz);
         } catch (Exception ex) {
             throw new StoredException("Failed to get entry for id " + id, ex);
         }
+    }
+
+    private static <T> T docToObj(Document document, Class<T> clazz) {
+        String strJson = document.toJson();
+        Wrapper myJson = JsonBuilder.build().fromJson(strJson, Wrapper.class);
+        return myJson.value.fromJson(clazz);
     }
 
     public synchronized boolean collectionExists(String collectionName) {
@@ -325,13 +339,16 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected synchronized <T> List<T> findMany(String key, String value, String collectionName, Class<T> clazz) {
+    public synchronized <T> List<T> findMany(String key, String value, String collectionName, Class<T> clazz) {
         try {
             Gson json = JsonBuilder.build();
             List<T> list = new ArrayList<>();
-            getCollection(collectionName).find(new Document(key, value))
-                    .forEach((Consumer<? super Document>) (Document document) -> {
-                        list.add(json.fromJson(document.toJson(), (java.lang.reflect.Type) clazz));
+            MongoCollection<Document> collection = getCollection(collectionName);
+            maybeCreateIndex(collection, key);
+            FindIterable<Document> docs = collection.find(new Document(key, value));
+
+            docs.forEach((Consumer<? super Document>) (Document document) -> {
+                        list.add(docToObj(document, clazz));
                     });
             return list;
         } catch (Exception e) {
@@ -339,11 +356,15 @@ public class Database implements AutoCloseable {
         }
     }
 
-    protected synchronized <T> T findOne(String key, String value, String collectionName, Class<T> clazz) {
+    public synchronized <T> T findOne(String key, String value, String collectionName, Class<T> clazz) {
         try {
             List<T> list = findMany(key, value, collectionName, clazz);
-            if (list.size() != 1) {
-                throw new Exception("Not exacly one element of key: " + key + " and value " + value + " in collection "
+            if (list.size() == 0) {
+                throw new Exception("No even single element of key: " + key + " and value " + value + " in collection "
+                        + collectionName);
+            }
+            if (list.size() > 1) {
+                throw new Exception("More than one element of key: " + key + " and value " + value + " in collection "
                         + collectionName);
             }
             return list.get(0);

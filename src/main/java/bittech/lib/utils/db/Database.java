@@ -12,7 +12,6 @@ import com.mongodb.MongoClient;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
-import com.mongodb.client.ListIndexesIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
@@ -345,11 +344,17 @@ public class Database implements AutoCloseable {
             List<T> list = new ArrayList<>();
             MongoCollection<Document> collection = getCollection(collectionName);
             maybeCreateIndex(collection, key);
-            FindIterable<Document> docs = collection.find(new Document(key, value));
-
-            docs.forEach((Consumer<? super Document>) (Document document) -> {
-                        list.add(docToObj(document, clazz));
+            getCollection(collectionName).find(new Document(key, value))
+                    .forEach((Consumer<? super Document>) (Document document) -> {
+                        list.add(json.fromJson(document.toJson(), (java.lang.reflect.Type) clazz));
                     });
+
+//            Wersja docelowa:
+//            FindIterable<Document> docs = collection.find(new Document(key, value));
+//
+//            docs.forEach((Consumer<? super Document>) (Document document) -> {
+//                list.add(docToObj(document, clazz));
+
             return list;
         } catch (Exception e) {
             throw new StoredException("Failed to get collection " + collectionName + " to class " + clazz.getName(), e);

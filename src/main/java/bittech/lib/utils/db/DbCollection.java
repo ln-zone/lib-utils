@@ -3,6 +3,9 @@ package bittech.lib.utils.db;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBCursor;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.MongoCursor;
 import org.bson.Document;
 
 import java.util.List;
@@ -63,6 +66,7 @@ public class DbCollection<T> {
         }
     }
 
+
     public void delete(String key, String value) {
         try {
             database.deleteDocument(key, value, getOrCreateCollection());
@@ -92,6 +96,10 @@ public class DbCollection<T> {
     public T getLastObject() {
         return database.getLastObjectToClass(getOrCreateCollection(), clazz);
     }
+
+//    public List<T> getLastsObjects(int numbersOfEntriesToGet) {
+//        MongoCursor<Document>
+//    }
 
     public void update(String key, String value, T object) {
         delete(key, value);

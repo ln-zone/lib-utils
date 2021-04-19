@@ -6,6 +6,11 @@ import bittech.lib.utils.Utils;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 import bittech.lib.utils.json.RawJson;
+import com.mongodb.client.MongoCursor;
+import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
@@ -14,9 +19,7 @@ import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Indexes;
-import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +69,28 @@ public class Database implements AutoCloseable {
                 Config.getInstance().getEntry("mongodbName", String.class));
     }
 
+
+    public MongoCursor<Document> getGreatherThan(String collectionToWatch ,String field, long gt){
+        MongoCollection<Document> collection = mongoDatabase.getCollection(collectionToWatch);
+        BasicDBObject getQuery = new BasicDBObject(field,new BasicDBObject("$gt", gt));
+      //  getQuery.put(collectionToWatch, new BasicDBObject("$gt", gt));
+        MongoCursor<Document> cursor = collection.find(getQuery).cursor();
+//        while(cursor.hasNext()) {
+//            System.out.println(cursor.next());
+//        }
+        return cursor;
+
+    }
+    public MongoCursor<Document> getGratherThanId(String hexId,String collName){
+        MongoCursor<Document> documents = mongoDatabase.getCollection(collName).find(new BasicDBObject("_id", new BasicDBObject("$gt", new ObjectId(hexId)))).cursor();
+        return documents;
+    }
+    public MongoCursor<Document> getLastsObjects(int numbersOfEntriesToGet,String fromCollection){
+            MongoCollection collection=mongoDatabase.getCollection(fromCollection);
+            BasicDBObject getQuery=new BasicDBObject("$natural",-1);
+        MongoCursor result = collection.find().sort(getQuery).limit(numbersOfEntriesToGet).cursor();
+        return result;
+    }
     public void onWriteAccessLost(Runnable evWriteAccessLost) {
         this.evWriteAccessLost = Require.notNull(evWriteAccessLost, "evWriteAccessLost");
     }

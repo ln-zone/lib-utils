@@ -62,14 +62,14 @@ public class Utils {
 		System.out.println(title + ": " + JsonBuilder.build().toJson(obj));
 	}
 
-	public static void delFileIfExists(String fileName) {
-		try {
-			if (new File(fileName).exists()) {
-				Files.delete(Path.of(fileName));
-			}
-		} catch (Exception ex) {
-			throw new StoredException("Failed on tryintg to delete file", ex);
-		}
-	}
+//	public static void delFileIfExists(String fileName) {
+//		try {
+//			if (new File(fileName).exists()) {
+//				Files.delete(Path.of(fileName));
+//			}
+//		} catch (Exception ex) {
+//			throw new StoredException("Failed on tryintg to delete file", ex);
+//		}
+//	}
 
 }

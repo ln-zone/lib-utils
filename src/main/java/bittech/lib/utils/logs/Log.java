@@ -10,6 +10,7 @@ import bittech.lib.utils.Require;
 
 public class Log {
 
+
 	public enum Severity {
 		Info, Warning, Error
 	}

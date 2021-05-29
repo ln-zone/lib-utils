@@ -4,6 +4,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,6 +62,19 @@ public class Utils {
 
 	public static void prn(String title, Object obj) {
 		System.out.println(title + ": " + JsonBuilder.build().toJson(obj));
+	}
+
+	public static Timer runEvery(Runnable task, long delayMillis, long periodMillis) {
+		TimerTask t = new TimerTask() {
+			public void run() {
+				task.run();
+			}
+		};
+		Timer timer = new Timer("Timer");
+
+		timer.schedule(t, delayMillis, periodMillis);
+
+		return timer;
 	}
 
 //	public static void delFileIfExists(String fileName) {

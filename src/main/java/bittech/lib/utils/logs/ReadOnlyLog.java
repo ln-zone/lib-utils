@@ -1,6 +1,7 @@
 package bittech.lib.utils.logs;
 
 import bittech.lib.utils.FormattedTime;
+import org.bson.types.ObjectId;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,10 +12,11 @@ public class ReadOnlyLog {
         String $numberLong;
     }
 
+
     public enum Severity {
         Info, Warning, Error
     }
-
+    ObjectId _id;
     FormattedTime time;
     TimeMillisMongo timeMillsec;
     bittech.lib.utils.logs.Log.Severity severity;
@@ -23,7 +25,13 @@ public class ReadOnlyLog {
     String event;
 
 
+    public long getTimeMillsec() {
+        return Long.parseLong(timeMillsec.$numberLong);
+    }
 
+    public ObjectId getId() {
+        return _id;
+    }
 
     public boolean getInspectNeeded() {
         return inspectNeeded;
